@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/', 'GoalController@index');
+Route::get('/', 'GoalController@index')->name('goals.index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::resource('/goals', 'GoalController')->except(['index'])->middleware('auth');
