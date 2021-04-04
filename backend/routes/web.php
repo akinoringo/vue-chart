@@ -17,3 +17,7 @@ Auth::routes();
 
 Route::resource('/goals', 'GoalController')->except(['index, show'])->middleware('auth');
 Route::resource('/goals', 'GoalController')->only(['show']);
+
+Route::resource('/efforts', 'EffortController');
+
+

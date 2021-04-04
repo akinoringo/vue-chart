@@ -21,7 +21,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="">軌跡作成</a>
+      <a class="nav-link" href="{{route('efforts.create')}}">軌跡作成</a>
     </li>
     @endauth
 {{--     <li class="nav-item">
