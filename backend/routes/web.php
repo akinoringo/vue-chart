@@ -15,4 +15,5 @@ Route::get('/', 'GoalController@index')->name('goals.index');
 
 Auth::routes();
 
-Route::resource('/goals', 'GoalController')->except(['index'])->middleware('auth');
+Route::resource('/goals', 'GoalController')->except(['index, show'])->middleware('auth');
+Route::resource('/goals', 'GoalController')->only(['show']);
