@@ -44,7 +44,7 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
         <button class="dropdown-item" type="button"
-                onclick="location.href=''">
+                onclick="location.href='{{route('mypage.index')}}'">
           マイページ
         </button>
         <div class="dropdown-divider"></div>
@@ -52,7 +52,7 @@
           ログアウト
         </button>
       </div>
-    </li>
+    </li>  
     <form id="logout-button" method="POST" action="{{route('logout')}}">
       @csrf
     </form>

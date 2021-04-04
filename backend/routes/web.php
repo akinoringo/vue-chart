@@ -20,4 +20,8 @@ Route::resource('/goals', 'GoalController')->only(['show']);
 
 Route::resource('/efforts', 'EffortController');
 
+Route::get('/mypage/index', 'ProfileController@index')->name('mypage.index')->middleware('auth');
+
+Route::get('/mypage/edit', 'ProfileController@edit')->name('mypage.edit')->middleware('auth');
+
 
