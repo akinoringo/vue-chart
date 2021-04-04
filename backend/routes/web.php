@@ -24,4 +24,6 @@ Route::get('/mypage/index', 'ProfileController@index')->name('mypage.index')->mi
 
 Route::get('/mypage/edit', 'ProfileController@edit')->name('mypage.edit')->middleware('auth');
 
+Route::post('/mypage/update', 'ProfileController@update')->name('mypage.update')->middleware('auth');
+
 

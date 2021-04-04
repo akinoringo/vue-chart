@@ -1,55 +1,37 @@
 @extends('layouts.app')
 
-@section('title')
-プロフィール編集
-@endsection
+@section('title', 'マイページ編集')
 
 @section('content')
-<div id="profile-edit-form" class="container">
+  <div class="container">
     <div class="row">
-        <div class="col-8 offset-2">
-            @if (session('status'))
-            <div class="alert alert-success" role="alert">
-                {{ session('status') }}
-            </div>
-            @endif
-        </div>
-    </div>
+      <div class="mx-auto col col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6">
+        <h1 class="text-center"><a class="text-dark" href="/">Kiseki</a></h1>
+        <div class="card mt-3">
+          <div class="card-body text-center">
+            <h2 class="h3 card-title text-center mt-2">マイページ編集</h2>
 
-    <div class="row">
-        <div class="col-8 offset-2 bg-white">
+            @include('layouts.error_card_list')
 
-            <div class="font-weight-bold text-center border-bottom pb-3 pt-3" style="font-size: 24px">プロフィール編集</div>
-
-            <form method="POST" action="{{ route('mypage.edit-profile') }}" class="p-5" enctype="multipart/form-data">
+            <div class="card-text">
+              {{--ここから--}}
+              <form method="POST" action="{{ route('mypage.update') }}">
                 @csrf
-
-                {{-- アバター画像 --}}
-                <span class="avatar-form image-picker">
-                    <input type="file" name="avatar" class="d-none" accept="image/png,image/jpeg,image/gif" id="avatar" />
-                    <label for="avatar" class="d-inline-block">
-                        <img src="/images/avatar-default.svg" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
-                    </label>
-                </span>
-
-                {{-- ニックネーム --}}
-                <div class="form-group mt-3">
-                    <label for="name">ニックネーム</label>
-                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $user->name) }}" required autocomplete="name" autofocus>
-                    @error('name')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
+                <div class="md-form">
+                  <label for="name">ユーザー名</label>
+                  <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $user->name) }}">
                 </div>
-
-                <div class="form-group mb-0 mt-3">
-                    <button type="submit" class="btn btn-block btn-secondary">
-                        保存
-                    </button>
+                <div class="md-form">
+                  <label for="email">メールアドレス</label>
+                  <input class="form-control" type="text" id="email" name="email" required value="{{ old('email', $user->email) }}" >
                 </div>
-            </form>
+                <button class="btn btn-block bg-dark mt-2 mb-2 text-white" type="submit">更新する</button>
+              </form>
+              
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 @endsection
