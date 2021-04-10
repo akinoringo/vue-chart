@@ -15,8 +15,20 @@
 
             <div class="card-text">
               {{--ここから--}}
-              <form method="POST" action="{{ route('mypage.update') }}">
+              <form method="POST" action="{{ route('mypage.update') }}" enctype="multipart/form-data">
                 @csrf
+
+                <span class="image-form image-picker">
+                  <input type="file" name="image" class="d-none" accept="image/png,image/jpeg, image/jpg, image/gif" id="image">
+                  <label for="image" class="d-inline-block">
+                    @if(!empty($user->image))
+                    <img src="/storage/images/{{$user->image}}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
+                    @else
+                    <img src="/images/dummy-image.jpeg" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
+                    @endif
+                  </label>
+                </span>
+
                 <div class="md-form">
                   <label for="name">ユーザー名</label>
                   <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $user->name) }}">
