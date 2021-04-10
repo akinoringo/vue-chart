@@ -21,10 +21,6 @@
                   <label for="name">ユーザー名</label>
                   <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $user->name) }}">
                 </div>
-                <div class="md-form">
-                  <label for="email">メールアドレス</label>
-                  <input class="form-control" type="text" id="email" name="email" required value="{{ old('email', $user->email) }}" >
-                </div>
                 <button class="btn btn-block bg-dark mt-2 mb-2 text-white" type="submit">更新する</button>
               </form>
               

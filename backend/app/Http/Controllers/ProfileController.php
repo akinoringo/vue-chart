@@ -6,7 +6,7 @@ use App\Effort;
 use App\Goal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Requests\ProfileRequest;
 
 class ProfileController extends Controller
 {
@@ -19,7 +19,13 @@ class ProfileController extends Controller
 	public function edit() {
 		return view('mypage.edit')->with('user', Auth::user());
 	}
-	public function update() {
+	public function update(ProfileRequest $request) {
+
+		$user = Auth::user();
+
+		$user->name = $request->input('name');
+		$user->save();
+
 		return redirect()->route('mypage.index');
 	}
 }
