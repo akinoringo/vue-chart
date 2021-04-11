@@ -16,6 +16,8 @@ class GoalController extends Controller
 		$this->authorizeResource(Goal::class, 'goal');
 	}
 
+	
+
 
 
 	public function index() {
