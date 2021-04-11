@@ -12,25 +12,22 @@
 
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-    @if(!empty($efforts0))
       @foreach($efforts0 as $effort)
       @include('efforts.card')
-      @endforeach    
-    @endif
+      @endforeach
+      {{ $efforts0->links() }}    
   </div>
   <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-    @if(!empty($efforts1))
       @foreach($efforts1 as $effort)
       @include('efforts.card')
       @endforeach
-    @endif
+      {{ $efforts1->links() }}
   </div>
   <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-  @if(!empty($efforts2))
     @foreach($efforts2 as $effort)
     @include('efforts.card')
-    @endforeach
-  @endif    
+    @endforeach  
+    {{ $efforts2->links() }}
   </div>
 </div>
 

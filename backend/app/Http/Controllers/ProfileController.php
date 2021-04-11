@@ -25,9 +25,9 @@ class ProfileController extends Controller
 		$goal1 = $goals[1];
 		$goal2 = $goals[2];
 
-		$efforts0 = $goal0->efforts;
-		$efforts1 = $goal1->efforts;
-		$efforts2 = $goal2->efforts;
+		$efforts0 = Effort::where('goal_id', $goal0->id)->paginate(3);
+		$efforts1 = Effort::where('goal_id', $goal1->id)->paginate(3);
+		$efforts2 = Effort::where('goal_id', $goal2->id)->paginate(3);
 
 		return view('mypage.index', compact('user', 'goal0', 'goal1', 'goal2', 'efforts0', 'efforts1', 'efforts2' ));
 	}
