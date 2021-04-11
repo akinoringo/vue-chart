@@ -73,7 +73,8 @@ class ProfileController extends Controller
 			# code...
 		}
 
-		return view('mypage.index', compact('user', 'goal0', 'goal1', 'goal2', 'efforts0', 'efforts1', 'efforts2', 'total_time0', 'total_time1', 'total_time2' ));
+
+		return view('mypage.index', compact('user', 'goal0', 'goal1', 'goal2', 'efforts0', 'efforts1', 'efforts2', 'total_time0', 'total_time1', 'total_time2'));
 	}
 
 	public function edit() {
