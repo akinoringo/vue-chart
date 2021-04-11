@@ -6,8 +6,7 @@
   @include('layouts.nav')
   
   <div class="container">
-    @foreach($efforts as $effort) 
-      @include('efforts.card')
-    @endforeach 
+  	@include('mypage.profile')
+  	@include('mypage.tab') 
   </div>
 @endsection

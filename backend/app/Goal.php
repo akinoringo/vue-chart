@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 class Goal extends Model
 {
     //
@@ -19,4 +20,10 @@ class Goal extends Model
 	{
 		return $this->belongsTo('App\User');
 	}
+
+  public function efforts()
+  {
+      return $this->hasMany('App\Effort');
+  }
+
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Effort;
 use App\Goal;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProfileRequest;
 use Illuminate\Http\File;
@@ -16,8 +17,19 @@ class ProfileController extends Controller
 {
     //
 	public function index() {
-		$efforts = Effort::paginate(10);
-		return view('mypage.index', compact('efforts'));
+		$user = Auth::user();
+
+		$goals = User::where('id', Auth::id())->first()->goals;
+
+		$goal0 = $goals[0];
+		$goal1 = $goals[1];
+		$goal2 = $goals[2];
+
+		$efforts0 = $goal0->efforts;
+		$efforts1 = $goal1->efforts;
+		$efforts2 = $goal2->efforts;
+
+		return view('mypage.index', compact('user', 'goal0', 'goal1', 'goal2', 'efforts0', 'efforts1', 'efforts2' ));
 	}
 
 	public function edit() {
