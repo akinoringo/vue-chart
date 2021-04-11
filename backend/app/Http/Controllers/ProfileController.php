@@ -16,25 +16,70 @@ use Intervention\Image\Facades\Image;
 class ProfileController extends Controller
 {
     //
-	public function index() {
-		$user = Auth::user();
+	public function index(Request $request) {
+		$search = $request->search;
 
+		$user = Auth::user();
 		$goals = User::where('id', Auth::id())->first()->goals;
 
 		$goal0 = $goals[0];
 		$goal1 = $goals[1];
 		$goal2 = $goals[2];
 
+		if ($search !== null) {
+			$efforts0 = Effort::where('goal_id', $goal0->id)
+				->where(function($query) use ($search) {
+					$query->orwhere('title', 'like', "%{$search}%")
+								->orwhere('content', 'like', "%{$search}%");
+			})->paginate(3);
+
+			$efforts1 = Effort::where('goal_id', $goal1->id)
+				->where(function($query) use ($search) {
+					$query->orwhere('title', 'like', "%{$search}%")
+								->orwhere('content', 'like', "%{$search}%");
+			})->paginate(3);		
+
+			$efforts2 = Effort::where('goal_id', $goal2->id)
+				->where(function($query) use ($search) {
+					$query->orwhere('title', 'like', "%{$search}%")
+								->orwhere('content', 'like', "%{$search}%");
+			})->paginate(3);		
+
+		} else {
+
+
 		$efforts0 = Effort::where('goal_id', $goal0->id)->paginate(3);
 		$efforts1 = Effort::where('goal_id', $goal1->id)->paginate(3);
 		$efforts2 = Effort::where('goal_id', $goal2->id)->paginate(3);
 
-		return view('mypage.index', compact('user', 'goal0', 'goal1', 'goal2', 'efforts0', 'efforts1', 'efforts2' ));
+		}
+
+		$total_time0 = 0;
+		$total_time1 = 0;
+		$total_time2 = 0;
+
+		foreach ($goal0->efforts as $effort) {
+			$total_time0 += $effort->effort_time;
+			# code...
+		}
+
+		foreach ($goal1->efforts as $effort) {
+			$total_time1 += $effort->effort_time;
+			# code...
+		}
+		
+		foreach ($goal2->efforts as $effort) {
+			$total_time2 += $effort->effort_time;
+			# code...
+		}
+
+		return view('mypage.index', compact('user', 'goal0', 'goal1', 'goal2', 'efforts0', 'efforts1', 'efforts2', 'total_time0', 'total_time1', 'total_time2' ));
 	}
 
 	public function edit() {
 		return view('mypage.edit')->with('user', Auth::user());
 	}
+
 	public function update(ProfileRequest $request) {
 
 		$user = Auth::user();
