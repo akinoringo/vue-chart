@@ -37,7 +37,7 @@
     @foreach($efforts[0] as $effort)
     @include('efforts.card')
     @endforeach 
-    {{$efforts[0]->links()}}
+    {{$efforts[0]->appends(request()->query())->links()}}
   </div>
   @endif 
   @if(isset($efforts[1]))
@@ -45,7 +45,7 @@
     @foreach($efforts[1] as $effort)
     @include('efforts.card')
     @endforeach
-    {{$efforts[1]->links()}}      
+    {{$efforts[1]->appends(request()->query())->links()}}     
   </div>
   @endif 
   @if(isset($efforts[2])) 
@@ -53,7 +53,7 @@
     @foreach($efforts[2] as $effort)
     @include('efforts.card')
     @endforeach
-    {{$efforts[2]->links()}}    
+    {{$efforts[2]->appends(request()->query())->links()}}    
   </div>
   @endif
 </div>
