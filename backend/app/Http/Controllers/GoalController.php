@@ -28,7 +28,12 @@ class GoalController extends Controller
 
 	public function create() {
 		$user = Auth::user();
-		$number = Goal::where('user_id', $user->id)->count();
+
+		$number = Goal::where('user_id', $user->id)
+			->where(function($goal) {
+				$goal->where('status', 0);
+		})->count();
+
 		// 目標が３つの場合は、新たに作成不可。
 		if ($number !== 3){
 			return view('goals.create');

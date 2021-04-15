@@ -1,46 +1,60 @@
+@include('mypage.label')
 
-
+@if($goals)
 <ul class="nav nav-pills mb-3 mt-2" id="pills-tab" role="tablist">
+  @if(isset($goals[0]))
   <li class="nav-item text-center">
     <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
-      {{$goal0->title}}<br>
-      {{$total_time0}}/{{$goal0->goal_time}} [時間]
+      {{$goals[0]->title}}<br>
+      xxx/{{$goals[0]->goal_time}} [時間]
     </a>
   </li>
+  @endif
+  @if (isset($goals[1]))
   <li class="nav-item text-center">
-    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">
-      {{$goal1->title}}<br>
-      {{$total_time1}}/{{$goal1->goal_time}} [時間]
+    <a class="nav-link" id="pills-second-tab" data-toggle="pill" href="#pills-second" role="tab" aria-controls="pills-second" aria-selected="false">
+      {{$goals[1]->title}}<br>
+      xxx/{{$goals[1]->goal_time}} [時間]
     </a>
   </li>
+  @endif
+  @if (isset($goals[2]))  
   <li class="nav-item text-center">
-    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">
-      {{$goal2->title}}<br>
-      {{$total_time2}}/{{$goal2->goal_time}} [時間]
+    <a class="nav-link" id="pills-third-tab" data-toggle="pill" href="#pills-third" role="tab" aria-controls="pills-third" aria-selected="false">
+      {{$goals[2]->title}}<br>
+      xxx/{{$goals[2]->goal_time}} [時間]
     </a>
   </li>
+  @endif
 </ul>
+
 
 @include('mypage.search')
 
 <div class="tab-content" id="pills-tabContent">
+  @if(isset($efforts[0]))
   <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-    @foreach($efforts0 as $effort)
+    @foreach($efforts[0] as $effort)
+    @include('efforts.card')
+    @endforeach 
+    {{$efforts[0]->links()}}
+  </div>
+  @endif 
+  @if(isset($efforts[1]))
+  <div class="tab-pane fade" id="pills-second" role="tabpanel" aria-labelledby="pills-second-tab">
+    @foreach($efforts[1] as $effort)
     @include('efforts.card')
     @endforeach
-    {{ $efforts0->links() }}     
+    {{$efforts[1]->links()}}      
   </div>
-  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-    @foreach($efforts1 as $effort)
+  @endif 
+  @if(isset($efforts[2])) 
+  <div class="tab-pane fade" id="pills-third" role="tabpanel" aria-labelledby="pills-third-tab">
+    @foreach($efforts[2] as $effort)
     @include('efforts.card')
     @endforeach
-    {{ $efforts1->links() }}    
+    {{$efforts[2]->links()}}    
   </div>
-  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-    @foreach($efforts2 as $effort)
-    @include('efforts.card')
-    @endforeach
-    {{ $efforts2->links() }}    
-  </div>
+  @endif
 </div>
-
+@endif
