@@ -1,6 +1,11 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark">
 
+  @guest
   <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Kiseki</a>
+  @endguest
+  @auth
+  <a class="navbar-brand" href="{{route('mypage.index')}}"><i class="far fa-bookmark"></i> Kiseki</a>
+  @endauth
 
   <ul class="navbar-nav ml-auto">
     @guest {{--この行を追加--}}

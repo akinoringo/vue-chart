@@ -10,8 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/', 'ProfileController@index')->name('mypage.index')->middleware('auth');
+Route::get('/mypage/index', 'ProfileController@index')->name('mypage.index')->middleware('auth');
 
 Auth::routes();
 

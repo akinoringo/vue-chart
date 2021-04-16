@@ -31,7 +31,6 @@
   @endif
 </ul>
 
-
 @include('mypage.search')
 
 <div class="tab-content" id="pills-tabContent">
