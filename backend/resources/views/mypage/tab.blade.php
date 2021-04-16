@@ -8,6 +8,7 @@
       {{$goals[0]->title}}<br>
       {{$goals[0]->efforts_time}}/{{$goals[0]->goal_time}} [時間]
     </a>
+    <a class="small" href="{{route('goals.show', ['goal'=>$goals[0]])}}">目標詳細</a> 
   </li>
   @endif
   @if (isset($goals[1]))
@@ -16,6 +17,7 @@
       {{$goals[1]->title}}<br>
       {{$goals[1]->efforts_time}}/{{$goals[1]->goal_time}} [時間]
     </a>
+    <a class="small" href="{{route('goals.show', ['goal'=>$goals[1]])}}">目標詳細</a>
   </li>
   @endif
   @if (isset($goals[2]))  
@@ -24,6 +26,7 @@
       {{$goals[2]->title}}<br>
       {{$goals[2]->efforts_time}}/{{$goals[2]->goal_time}} [時間]
     </a>
+    <a class="small" href="{{route('goals.show', ['goal'=>$goals[2]])}}">目標詳細</a>
   </li>
   @endif
 </ul>

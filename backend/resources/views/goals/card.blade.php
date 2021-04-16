@@ -15,11 +15,11 @@
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="{{ route("goals.edit", ['goal' => $goal]) }}">
-              <i class="fas fa-pen mr-1"></i>記事を更新する
+              <i class="fas fa-pen mr-1"></i>目標を更新する
             </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item text-danger" data-toggle="modal" data-target="#modal-delete-{{ $goal->id }}">
-              <i class="fas fa-trash-alt mr-1"></i>記事を削除する
+              <i class="fas fa-trash-alt mr-1"></i>目標を削除する
             </a>
           </div>
         </div>
@@ -62,5 +62,9 @@
     <div class="card-text">
       {{ $goal->content }}
     </div>
+    <div class="card-text mt-2">
+      {{ $goal->efforts_time }}/{{ $goal->goal_time}}時間
+    </div>    
+
   </div>
 </div>
