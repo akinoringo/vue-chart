@@ -6,6 +6,7 @@ use App\Effort;
 use App\Goal;
 use Illuminate\Http\Request;
 use App\Http\Requests\EffortRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class EffortController extends Controller
@@ -67,7 +68,12 @@ class EffortController extends Controller
 	}
 
 	public function edit(Effort $effort){
-		$goals = Goal::all()->sortByDesc('created_at');
+		// $goals = Goal::all()->sortByDesc('created_at');
+		$goals = Goal::where('user_id', Auth::user()->id)
+			->where(function($goals){
+				$goals->where('status', 0);
+			})->get();
+
 		return view('efforts.edit', compact('effort', 'goals'));
 	}	
 
