@@ -30,15 +30,15 @@ class GoalController extends Controller
 		$user = Auth::user();
 
 		$number = Goal::where('user_id', $user->id)
-			->where(function($goal) {
-				$goal->where('status', 0);
+			->where(function($goals) {
+				$goals->where('status', 0);
 		})->count();
 
 		// 目標が３つの場合は、新たに作成不可。
 		if ($number !== 3){
 			return view('goals.create');
 		} else {
-			return redirect()->route('goals.index');
+			return redirect()->route('mypage.index');
 		}
 	}
 
@@ -46,7 +46,7 @@ class GoalController extends Controller
 		$goal->fill($request->all());
 		$goal->user_id = $request->user()->id;
 		$goal->save();
-		return redirect()->route('goals.index');
+		return redirect()->route('mypage.index');
 	}
 
 	public function edit(Goal $goal)
@@ -57,13 +57,13 @@ class GoalController extends Controller
 	public function update(GoalRequest $request, Goal $goal)
 	{
 		$goal->fill($request->all())->save();
-		return redirect()->route('goals.index');
+		return redirect()->route('mypage.index');
 	}	
 
 	public function destroy(Goal $goal)
 	{
 		$goal->delete();
-		return redirect()->route('goals.index');
+		return redirect()->route('mypage.index');
 	}		
 
 	public function show(Goal $goal)

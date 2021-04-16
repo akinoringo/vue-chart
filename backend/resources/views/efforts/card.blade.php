@@ -1,10 +1,13 @@
 <div class="card mt-3">
   <div class="card-body d-flex flex-row">
-    <i class="fas fa-user-circle fa-3x mr-1"></i>
-    <div>
-      <div class="font-weight-bold">{{ $effort->user->name }}</div>
-      <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
-    </div>
+    @if(!empty($user->image))
+    <img src="/storage/images/{{$user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+    @else
+    <img src="/images/dummy-image.jpeg" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+    @endif     <div>
+    <div class="font-weight-bold">{{ $effort->user->name }}</div>
+    <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
+  </div>
 
   @if( Auth::id() === $effort->user_id )
     <!-- dropdown -->
@@ -62,5 +65,8 @@
     <div class="card-text">
       {{ $effort->content }}
     </div>
+    <div class="card-text mt-2">
+      {{ $effort->effort_time }}時間
+    </div>    
   </div>
 </div>

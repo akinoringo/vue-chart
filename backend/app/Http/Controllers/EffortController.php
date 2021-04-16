@@ -96,7 +96,7 @@ class EffortController extends Controller
 	public function destroy(Effort $effort)
 	{
 		$effort->delete();
-		return redirect()->route('efforts.index');
+		return redirect()->route('mypage.index');
 	}
 
 

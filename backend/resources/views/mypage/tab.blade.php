@@ -1,4 +1,4 @@
-@include('mypage.label')
+
 
 @if($goals)
 <ul class="nav nav-pills mb-3 mt-2" id="pills-tab" role="tablist">
