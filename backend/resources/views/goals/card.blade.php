@@ -1,6 +1,10 @@
 <div class="card mt-3">
   <div class="card-body d-flex flex-row">
-    <i class="fas fa-user-circle fa-3x mr-1"></i>
+    @if(!empty($user->image))
+    <img src="/storage/images/{{$user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+    @else
+    <img src="/images/dummy-image.jpeg" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+    @endif
     <div>
       <div class="font-weight-bold">{{ $goal->user->name }}</div>
       <div class="font-weight-lighter">{{ $goal->created_at->format('Y/m/d H:i') }}</div>
@@ -59,10 +63,12 @@
         {{ $goal->title }}
       </a>
     </h3>
-    <div class="card-text">
+    <div class="card-text mb-3">
+      <div>内容：</div>
       {{ $goal->content }}
     </div>
-    <div class="card-text mt-2">
+    <div class="card-text mt-1">
+      <span class="mr-2">継続時間/目標時間：</span>
       {{ $goal->efforts_time }}/{{ $goal->goal_time}}時間
     </div>    
 

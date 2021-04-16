@@ -27,6 +27,7 @@ class EffortRequest extends FormRequest
             //
             'title' => 'required|max:50',
             'content' => 'required|max:500',
+            'effort_time' => 'required|integer|max:20'
         ];
     }
 
@@ -36,6 +37,7 @@ class EffortRequest extends FormRequest
             //
             'title' => 'タイトル',
             'content' => '本文',
+            'effort_time' => '取組時間'
         ];
     }
 }

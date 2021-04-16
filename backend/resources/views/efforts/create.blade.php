@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@section('title', '軌跡作成')
-
-@include('layouts.nav')
-
 @section('content')
   <div class="container">
     <div class="row">

@@ -1,15 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'マイページ編集')
-
 @section('content')
   <div class="container">
     <div class="row">
       <div class="mx-auto col col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6">
-        <h1 class="text-center"><a class="text-dark" href="/">Kiseki</a></h1>
         <div class="card mt-3">
           <div class="card-body">
-            <h2 class="h3 card-title text-center mt-2">マイページ編集</h2>
+            <h2 class="h3 card-title text-center mt-2">プロフィール編集</h2>
 
             @include('layouts.error_card_list')
 
@@ -38,7 +35,7 @@
                 </div>
                 <div class="form">
                   <label for="introduction">About</label>
-                  <textarea class="form-control" type="text" id="introduction" name="introduction" required value="{{ old('introduction', $user->introduction) }}"></textarea>
+                  <textarea class="form-control" type="text" id="introduction" name="introduction" required>{{ old('introduction', $user->introduction) }}</textarea>
 
                 </div>                                  
                 <button class="btn btn-block bg-dark mt-2 mb-2 text-white" type="submit">更新する</button>

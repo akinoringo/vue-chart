@@ -25,8 +25,9 @@ class ProfileRequest extends FormRequest
     {
         return [
             //
-            'name' => ['required', 'string', 'max:255'],
-            'image' => ['file', 'image'],
+            'name' => 'required|string|max:50',
+            'image' => 'file|image',
+            'introduction' => 'max:500'
         ];
     }
 }

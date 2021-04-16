@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@section('title', '記事更新')
-
-@include('layouts.nav')
-
 @section('content')
   <div class="container">
     <div class="row">

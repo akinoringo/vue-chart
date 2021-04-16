@@ -16,19 +16,10 @@ class GoalController extends Controller
 		$this->authorizeResource(Goal::class, 'goal');
 	}
 
-	
-
-
-
-	public function index() {
-		$goals = Goal::all()->sortByDesc('created_at');
-
-		return view('goals.index', ['goals' => $goals]);
-	}
-
 	public function create() {
 		$user = Auth::user();
 
+		// ユーザーに紐づく目標を取得し、未達成(statu:0)の目標数をカウントする。
 		$number = Goal::where('user_id', $user->id)
 			->where(function($goals) {
 				$goals->where('status', 0);
@@ -38,10 +29,14 @@ class GoalController extends Controller
 		if ($number !== 3){
 			return view('goals.create');
 		} else {
-			return redirect()->route('mypage.index');
+			return redirect()->route('mypage.index')->with([
+				'flash_message' => '同時に登録できる目標は3つまでです。',
+				'color' => 'danger'
+			]);
 		}
 	}
 
+	// フォームリクエストで取得した情報をフィルターして保存
 	public function store(GoalRequest $request, Goal $goal) {
 		$goal->fill($request->all());
 		$goal->user_id = $request->user()->id;
@@ -68,6 +63,9 @@ class GoalController extends Controller
 
 	public function show(Goal $goal)
 	{
-		return view('goals.show', ['goal' => $goal]);
+		return view('goals.show', [
+			'goal' => $goal,
+			'user' => Auth::user()
+		]);
 	}			
 }

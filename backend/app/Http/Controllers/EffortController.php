@@ -12,22 +12,6 @@ use Illuminate\Support\Facades\DB;
 class EffortController extends Controller
 {
     //
-	public function index(Request $request){
-		$search = $request->search;
-
-		if ($search !== null) {
-			$efforts = Effort::where('title', 'like', "%{$search}%")
-			->orWhere('content', 'like', "%{$search}%")
-			->paginate(10);
-
-		} else {
-			$efforts = Effort::paginate(10);
-		}
-
-		// $efforts = Effort::all()->sortByDesc('created_at');
-
-		return view('efforts.index', compact('efforts'));
-	}
 
 	public function create(){
 		$goals = Goal::where('user_id', Auth::user()->id)
@@ -45,6 +29,7 @@ class EffortController extends Controller
 
 		return view('efforts.create', compact('goals'));
 	}
+
 
 	public function store(EffortRequest $request, Effort $effort ){
 		//軌跡の保存処理
@@ -91,8 +76,12 @@ class EffortController extends Controller
 		$effort->fill($request->all())->save();
 
 		// 軌跡に紐づく目標と、目標に紐づく軌跡を全て抽出
-		$goal = Goal::where('id', $request->goal_id)->get()->first();
-		$efforts = Effort::where('goal_id', $request->goal_id)->get();
+		$goal = Goal::where('id', $effort->goal_id)->get()->first();
+		$efforts = Effort::where('goal_id', $effort->goal_id)->get();
+
+		// $goalに紐づくeffortsの取り組み時間の合計値($goal->efforts_time)をDBに保存。
+		$goal->efforts_time = $this->sumEffortsTime($efforts);
+		$goal->save();		
 
 		//目標のステータスが0(目標未達成)の場合、goal_time>total(effort_time)であれば目標ステータスを1に更新する。
 		if($goal->status === 0) {
@@ -113,14 +102,27 @@ class EffortController extends Controller
 
 	public function destroy(Effort $effort)
 	{
+		// $effortに紐づく$goalの取得
+		$goal = Goal::where('id', $effort->goal_id)->get()->first();
+
+		// $effortの消去
 		$effort->delete();
+
+		// 消去した$effortに紐づいていた$goalに紐づく軌跡合計時間($efforts_time)を再計算
+		$efforts = Effort::where('goal_id', $goal->id)->get();
+		$goal->efforts_time = $this->sumEffortsTime($efforts);
+		$goal->save();
+
 		return redirect()->route('mypage.index');
 	}
 
 
 	public function show(Effort $effort)
 	{
-		return view('efforts.show', compact('effort'));
+		return view('efforts.show', [
+			'effort' => $effort,
+			'user' => Auth::user()
+		]);
 	}	
 
 

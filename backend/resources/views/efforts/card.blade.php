@@ -4,7 +4,9 @@
     <img src="/storage/images/{{$user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
     @else
     <img src="/images/dummy-image.jpeg" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
-    @endif     <div>
+    @endif     
+
+  <div>
     <div class="font-weight-bold">{{ $effort->user->name }}</div>
     <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
   </div>
@@ -62,10 +64,12 @@
         {{ $effort->title }}
       </a>
     </h3>
-    <div class="card-text">
+    <div class="card-text mb-3">
+      <div>内容：</div>
       {{ $effort->content }}
     </div>
     <div class="card-text mt-2">
+      <span class="mr-1">継続時間：</span>
       {{ $effort->effort_time }}時間
     </div>    
   </div>

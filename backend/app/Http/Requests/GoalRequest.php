@@ -27,7 +27,7 @@ class GoalRequest extends FormRequest
             //
             'title' => 'required|max:50',
             'content' => 'required|max:500',
-            'goal_time' => 'required',
+            'goal_time' => 'required|integer|min:10',
         ];
     }
 
@@ -37,6 +37,7 @@ class GoalRequest extends FormRequest
             //
             'title' => 'タイトル',
             'content' => '本文',
+            'goal_time' => '目標継続時間'
         ];
     }    
 }
