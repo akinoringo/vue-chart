@@ -4,7 +4,7 @@
       @if(!empty($user->image))
       <img src="/storage/images/{{$user->image}}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
       @else
-      <img src="/images/dummy-image.jpeg" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
+      <img src="/images/prof.png" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
       @endif      
     </div>
     <div class="col-md-8">

@@ -3,13 +3,13 @@
     @if(!empty($user->image))
     <img src="/storage/images/{{$user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
     @else
-    <img src="/images/dummy-image.jpeg" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+    <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
     @endif     
 
-  <div>
-    <div class="font-weight-bold">{{ $effort->user->name }}</div>
-    <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
-  </div>
+    <div>
+      <div class="font-weight-bold">{{ $effort->user->name }}</div>
+      <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
+    </div>
 
   @if( Auth::id() === $effort->user_id )
     <!-- dropdown -->
