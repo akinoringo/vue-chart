@@ -46,7 +46,9 @@ class ProfileController extends Controller
 									$query->orwhere('title', 'like', "%{$search}%")
 												->orwhere('content', 'like', "%{$search}%");
 					})->paginate(3);
+
 		}
+
 		// $goal0 = $goals[0];
 		// $goal1 = $goals[1];
 		// $goal2 = $goals[2];

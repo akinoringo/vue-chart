@@ -22,6 +22,7 @@ class CreateGoalsTable extends Migration
             $table->string('image')->nullable();
             $table->tinyInteger('status')->default(0)->comment('0=アクティブ, 1=クリア済み, 2=削除済み');
             $table->bigInteger('goal_time')->unsigned();
+            $table->bigInteger('efforts_time')->unsigned()->default(0);
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

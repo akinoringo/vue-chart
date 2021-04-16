@@ -47,10 +47,15 @@ class EffortController extends Controller
 		$goal = Goal::where('id', $request->goal_id)->get()->first();
 		$efforts = Effort::where('goal_id', $request->goal_id)->get();
 
+		// $goalに紐づくeffortsの取り組み時間の合計値($goal->efforts_time)をDBに保存。
+
+		$goal->efforts_time = $this->sumEffortsTime($efforts);
+		$goal->save();
+
 		//目標のステータスが0(目標未達成)の場合、goal_time>total(effort_time)であれば目標ステータスを1に更新する。
 		if($goal->status === 0) {
 			
-			updateGoalStatus($goal, $efforts);
+			$this->updateGoalStatus($goal, $efforts);
 			return redirect()->route('mypage.index');			
 
 		} else {
@@ -77,7 +82,7 @@ class EffortController extends Controller
 		//目標のステータスが0(目標未達成)の場合、goal_time>total(effort_time)であれば目標ステータスを1に更新する。
 		if($goal->status === 0) {
 			
-			updateGoalStatus($goal, $efforts);
+			$this->updateGoalStatus($goal, $efforts);
 
 			return redirect()->route('mypage.index');			
 
@@ -105,7 +110,7 @@ class EffortController extends Controller
 	// 軌跡の合計時間に応じて目標ステータスを更新する。
 	private function updateGoalStatus($goal, $efforts){
 
-		if ($goal->goal_time <= sumEffortsTime($efforts)) {
+		if ($goal->goal_time <= $this->sumEffortsTime($efforts)) {
 
 			$goal->status = 1;
 			$goal->save();

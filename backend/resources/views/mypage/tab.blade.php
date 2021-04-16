@@ -6,7 +6,7 @@
   <li class="nav-item text-center">
     <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
       {{$goals[0]->title}}<br>
-      xxx/{{$goals[0]->goal_time}} [時間]
+      {{$goals[0]->efforts_time}}/{{$goals[0]->goal_time}} [時間]
     </a>
   </li>
   @endif
@@ -14,7 +14,7 @@
   <li class="nav-item text-center">
     <a class="nav-link" id="pills-second-tab" data-toggle="pill" href="#pills-second" role="tab" aria-controls="pills-second" aria-selected="false">
       {{$goals[1]->title}}<br>
-      xxx/{{$goals[1]->goal_time}} [時間]
+      {{$goals[1]->efforts_time}}/{{$goals[1]->goal_time}} [時間]
     </a>
   </li>
   @endif
@@ -22,7 +22,7 @@
   <li class="nav-item text-center">
     <a class="nav-link" id="pills-third-tab" data-toggle="pill" href="#pills-third" role="tab" aria-controls="pills-third" aria-selected="false">
       {{$goals[2]->title}}<br>
-      xxx/{{$goals[2]->goal_time}} [時間]
+      {{$goals[2]->efforts_time}}/{{$goals[2]->goal_time}} [時間]
     </a>
   </li>
   @endif
@@ -53,7 +53,7 @@
     @foreach($efforts[2] as $effort)
     @include('efforts.card')
     @endforeach
-    {{$efforts[2]->appends(request()->query())->links()}}    
+    {{$efforts[2]->appends(request()->query())->links()}}  
   </div>
   @endif
 </div>
