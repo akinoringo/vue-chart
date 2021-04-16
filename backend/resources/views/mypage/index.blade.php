@@ -1,8 +1,6 @@
 @extends('layouts/app')
 
 @section('content')
-  @include('layouts.nav')
-  @include('layouts.flash')
   
   <div class="container">
   	@include('mypage.profile')

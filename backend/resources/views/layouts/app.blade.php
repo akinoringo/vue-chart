@@ -19,6 +19,8 @@
 
 <body>
   <div class="common-wrapper">
+    @include('layouts.nav')
+    @include('layouts.flash')
     @yield('content')
   </div>
   @include('layouts.footer')

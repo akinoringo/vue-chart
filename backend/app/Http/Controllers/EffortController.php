@@ -30,9 +30,18 @@ class EffortController extends Controller
 	}
 
 	public function create(){
-		$goals = Goal::all()->sortByDesc('created_at');
-		
+		$goals = Goal::where('user_id', Auth::user()->id)
+			->where(function($goals){
+				$goals->where('status', 0);
+			})->get();
 
+		if (!isset($goals[0])) {
+
+			return redirect()->route('mypage.index')->with([
+				'flash_message' => 'まずは目標を作成してください',
+				'color' => 'danger'
+			]);
+		}
 
 		return view('efforts.create', compact('goals'));
 	}
@@ -94,7 +103,10 @@ class EffortController extends Controller
 
 		} else {
 
-			return redirect()->route('mypage.index')->with('flash_message', 'クリア済みの目標です。');
+			return redirect()->route('mypage.index')->with([
+				'flash_message' => 'クリア済みの目標です。',
+				'color' => 'danger'
+			]);
 		}
 
 	}	
@@ -121,7 +133,10 @@ class EffortController extends Controller
 			$goal->status = 1;
 			$goal->save();
 
-			session()->flash('flash_message', '目標をクリアしました。');
+			session()->flash([
+				'flash_message' => '目標をクリアしました。',
+				'color' => 'success'
+			]);
 
 		} else {
 
