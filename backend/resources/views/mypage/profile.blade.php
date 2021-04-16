@@ -21,8 +21,8 @@
         </div>
         <h5 class="card-title">Name</h5>
         <p class="card-text">{{ $user->name }}</p>
-        <h5 class="card-title">Introduction</h5>
-        <p class="card-text">自己紹介</p>
+        <h5 class="card-title">About</h5>
+        <p class="card-text">{{$user->introduction}}</p>
       </div>     
     </div>
   </div>
