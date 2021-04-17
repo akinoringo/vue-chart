@@ -10,6 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('guest', 'Auth\LoginController@guestLogin')->name('login.guest');
+
+
 Route::get('/', 'HomeController@index')->name('home');
 
 Route::get('/mypage/index', 'ProfileController@index')->name('mypage.index')->middleware('auth');

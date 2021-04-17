@@ -1,4 +1,4 @@
-<div class="card my-3 py-4">
+<div class="card my-3 py-4 border-light border-top-0 border-right-0 border-left-0 rounded-0" >
   <div class="row no-gutters">
     <div class="col-md-4 text-center">
       @if(!empty($user->image))
@@ -11,11 +11,11 @@
       <div class="card-body">
         <div class="dropdown text-right">
           <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-ellipsis-v"></i>
+            ▼  
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="{{ route("mypage.edit", ['user' => Auth::user()]) }}">
-              <i class="fas fa-pen mr-1"></i>プロフィールを更新する
+              プロフィールを編集する
             </a>
           </div>
         </div>

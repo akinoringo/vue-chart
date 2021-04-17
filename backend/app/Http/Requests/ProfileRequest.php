@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileRequest extends FormRequest
 {
@@ -16,18 +17,22 @@ class ProfileRequest extends FormRequest
         return true;
     }
 
+
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
+
     public function rules()
     {
+
         return [
             //
             'name' => 'required|string|max:50',
             'image' => 'file|image',
             'introduction' => 'max:500'
-        ];
+        ];            
+
     }
 }

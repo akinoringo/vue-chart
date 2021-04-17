@@ -38,6 +38,11 @@ class ProfileController extends Controller
 				})->get();				
 		}
 
+		$cleared_goals = Goal::where('user_id', $user->id)
+										->where(function($goals){
+											$goals->where('status', 1);
+										})->get();
+
 		$efforts = [];
 
 		foreach ($goals as $goal) {
@@ -103,7 +108,7 @@ class ProfileController extends Controller
 
 		// return view('mypage.index', compact('user', 'goals', 'goal0', 'goal1', 'goal2', 'efforts0', 'efforts1', 'efforts2', 'total_time0', 'total_time1', 'total_time2'));
 
-		return view('mypage.index', compact('user', 'goals', 'efforts', 'goal_label', 'search'));		
+		return view('mypage.index', compact('user', 'goals', 'efforts', 'goal_label', 'search', 'cleared_goals'));		
 	}
 
 	public function edit() {
@@ -111,7 +116,6 @@ class ProfileController extends Controller
 	}
 
 	public function update(ProfileRequest $request) {
-
 		$user = Auth::user();
 
 		$user->name = $request->input('name');

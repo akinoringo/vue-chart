@@ -22,20 +22,25 @@
                       @if(!empty($user->image))
                       <img src="/storage/images/{{$user->image}}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
                       @else
-                      <img src="/images/dummy-image.jpeg" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
+                      <img src="/images/prof.png" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
                       @endif
                     </label>
                   </span>
                 </div>
 
+
                 <div class="md-form">
                   <label for="name">Name</label>
+                @if (Auth::id() == 2)
+                  <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $user->name) }}">                  
+                @else
                   <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $user->name) }}">
+                @endif
 
                 </div>
                 <div class="form">
                   <label for="introduction">About</label>
-                  <textarea class="form-control" type="text" id="introduction" name="introduction" required>{{ old('introduction', $user->introduction) }}</textarea>
+                  <textarea class="form-control" type="text" id="introduction" name="introduction">{{ old('introduction', $user->introduction) }}</textarea>
 
                 </div>                                  
                 <button class="btn btn-block bg-dark mt-2 mb-2 text-white" type="submit">更新する</button>

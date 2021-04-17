@@ -8,17 +8,19 @@
   @endauth
 
   <ul class="navbar-nav ml-auto">
-    @guest {{--この行を追加--}}
+    @guest 
     <li class="nav-item">
-      <a class="nav-link" href="{{ route('register') }}">ユーザー登録</a> {{--この行を変更--}}
+      <a class="nav-link" href="{{ route('register') }}">ユーザー登録</a> 
     </li>
-    @endguest {{--この行を追加--}}
 
-    @guest {{--この行を追加--}}
     <li class="nav-item">
       <a class="nav-link" href="{{ route('login') }}">ログイン</a>
     </li>
-    @endguest {{--この行を追加--}}
+
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('login.guest') }}">ゲストログイン</a>
+    </li>    
+    @endguest 
 
     @auth
     <li class="nav-item">
@@ -29,17 +31,7 @@
       <a class="nav-link" href="{{route('efforts.create')}}">軌跡作成</a>
     </li>
     @endauth
-{{--     <li class="nav-item">
-      <a class="nav-link" href="">ユーザー登録</a>
-    </li>
 
-    <li class="nav-item">
-      <a class="nav-link" href="">ログイン</a>
-    </li>   --}}  
-
-{{--     <li class="nav-item">
-      <a class="nav-link" href=""><i class="fas fa-pen mr-1"></i>投稿する</a>
-    </li> --}}
     @auth
     <!-- Dropdown -->
     <li class="nav-item dropdown">

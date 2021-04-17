@@ -15,11 +15,11 @@
       <div class="ml-auto card-text">
         <div class="dropdown">
           <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-ellipsis-v"></i>
+            ▼
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="{{ route("goals.edit", ['goal' => $goal]) }}">
-              <i class="fas fa-pen mr-1"></i>目標を更新する
+              <i class="fas fa-pen mr-1"></i>目標を編集する
             </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item text-danger" data-toggle="modal" data-target="#modal-delete-{{ $goal->id }}">
