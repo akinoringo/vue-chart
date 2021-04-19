@@ -6,10 +6,10 @@
 2. 日々の軌跡と継続時間を記録する
 3. 目標時間に到達したらクリア。次の目標を登録しましょう！
 
-# URL
+## URL
 http://app-kiseki.com
 
-# 環境
+## 環境
 - PHP 7.4.16
 - Laravel 6.20.22
 - MySQL 8.0.23
@@ -19,7 +19,7 @@ http://app-kiseki.com
  - EC2
  - Route53
 
-## Installation
+## アプリのインストール
 $: on terminal, [app]: on app container
 
 $ git clone https://github.com/akinoringo/laravel-kiseki.git
@@ -42,7 +42,7 @@ $ docker-compose exec app bash
 http://localhost:80
 
 
-# 機能一覧
+## 機能一覧
 - ユーザー登録
  - プロフィール画像登録機能
  - 画像トリミング保存機能
@@ -53,5 +53,5 @@ http://localhost:80
 
 <img width="600" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/115177084-6408ad80-a109-11eb-9538-c38553fcab55.png">
 
-# インフラ構成図
+## インフラ構成図
 <img width="600" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/115180618-07a98c00-a111-11eb-92c1-638d96a9cdc6.png">
