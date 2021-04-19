@@ -41,7 +41,11 @@ class GoalController extends Controller
 		$goal->fill($request->all());
 		$goal->user_id = $request->user()->id;
 		$goal->save();
-		return redirect()->route('mypage.index');
+		return redirect()->route('mypage.show', [
+			'id' => Auth::user()->id,
+			'flash_message' => '目標を登録しました。',
+			'color' => 'success'
+		]);
 	}
 
 	public function edit(Goal $goal)
@@ -52,13 +56,21 @@ class GoalController extends Controller
 	public function update(GoalRequest $request, Goal $goal)
 	{
 		$goal->fill($request->all())->save();
-		return redirect()->route('mypage.index');
+		return redirect()->route('mypage.show', [
+			'id' => Auth::user()->id,
+			'flash_message' => '目標を編集しました。',
+			'color' => 'success'			
+		]);
 	}	
 
 	public function destroy(Goal $goal)
 	{
 		$goal->delete();
-		return redirect()->route('mypage.index');
+		return redirect()->route('mypage.show', [
+			'id' => Auth::user()->id,
+			'flash_message' => '目標を削除しました。',
+			'color' => 'success'			
+		]);
 	}		
 
 	public function show(Goal $goal)

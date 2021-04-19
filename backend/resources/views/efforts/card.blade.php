@@ -7,7 +7,7 @@
     @endif     
 
     <div>
-      <div class="font-weight-bold">{{ $effort->user->name }}</div>
+      <div class="font-weight-bold"><a class="text-dark" href="{{route('mypage.show', ['id' => $effort->user->id ])}}">{{$effort->user->name}}</a></div>
       <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
     </div>
 

@@ -112,6 +112,29 @@ class ProfileController extends Controller
 		return view('mypage.index', compact('user', 'goals', 'efforts', 'goal_label', 'search', 'cleared_goals'));		
 	}
 
+
+
+	public function show($id, Request $request) {
+
+		// viewから受け渡された$idに対応するユーザーの取得
+		$user = User::find($id);
+
+		// リクエストから検索条件と目標のステータス(0：未クリア、1：クリア済み)の取得
+		$search = $request->search;
+		$goal_label = $request->label;		
+
+		// $userと$goal_labelに対応する目標を配列として取得
+		// $goalひとつひとつに紐づく$effortを配列として取得
+		$goals = $this->goalsGet($user, $goal_label);
+		$efforts = $this->effortsGet($goals, $search);
+
+		// 達成済みの目標を配列で取得
+		$cleared_goals = $this->goalsGet($user, 1);
+
+		return view('mypage.show', compact('user', 'goals', 'efforts', 'goal_label', 'search', 'cleared_goals'));
+
+	}
+
 	public function edit() {
 		return view('mypage.edit')->with('user', Auth::user());
 	}
@@ -129,7 +152,44 @@ class ProfileController extends Controller
 
 		$user->save();
 
-		return redirect()->route('mypage.index');
+		return redirect()->route('mypage.show', ['id' => $user->id]);
+	}
+
+
+	// ユーザーと目標のステータス(0:未クリア、1:クリア済)に応じて該当する目標を全て取得
+	private function goalsGet($user, $goal_label)
+	{
+		if ($goal_label == 1) {
+			$goals = Goal::where('user_id', $user->id)
+				->where(function($goals){
+					$goals->where('status', 1);
+				})->get();
+		} else {
+			$goals = Goal::where('user_id', $user->id)
+				->where(function($goals){
+					$goals->where('status', 0);
+				})->get();			
+		}
+
+		return $goals;
+	}
+
+	// 目標に紐づく軌跡(複数)を配列で取得する。
+	private function effortsGet($goals, $search)
+	{
+
+		$efforts = [];
+
+		foreach ($goals as $goal) {
+			$efforts[] = Effort::orderBy('created_at', 'DESC')
+				->where('goal_id', $goal->id)
+				->where(function($query) use ($search) {
+									$query->orwhere('title', 'like', "%{$search}%")
+												->orwhere('content', 'like', "%{$search}%");
+					})->paginate(3);
+		}
+
+		return $efforts;
 	}
 
 	

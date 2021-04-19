@@ -9,6 +9,8 @@
     </div>
     <div class="col-md-8">
       <div class="card-body">
+
+        @if( Auth::id() === $user->id )
         <div class="dropdown text-right">
           <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             ▼  
@@ -19,6 +21,8 @@
             </a>
           </div>
         </div>
+        @endif
+
         <h5 class="card-title">Name</h5>
         <p class="card-text">{{ $user->name }}</p>
         <h5 class="card-title">About</h5>

@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\DB;
 class EffortController extends Controller
 {
     //
+	public function __construct()
+	{
+		$this->authorizeResource(Effort::class, 'effort');
+	}
+
 	public function index(Request $request) {
 
 		// 検索した語の抽出
@@ -66,11 +71,15 @@ class EffortController extends Controller
 		if($goal->status === 0) {
 			
 			$this->updateGoalStatus($goal, $efforts);
-			return redirect()->route('mypage.index');			
+			return redirect()->route('mypage.show', ['id' => Auth::user()->id]);			
 
 		} else {
 
-			return redirect()->route('mypage.index')->with('flash_message', 'クリア済みの目標です。');
+			return redirect()->route('mypage.show', [
+				'id' => Auth::user()->id,
+				'flash_message' => 'クリア済みの目標です。',
+				'color', 'danger'
+			]);
 		}
 
 
@@ -103,11 +112,16 @@ class EffortController extends Controller
 			
 			$this->updateGoalStatus($goal, $efforts);
 
-			return redirect()->route('mypage.index');			
+			return redirect()->route('mypage.show', [
+				'id' => Auth::user()->id,
+				'flash_message' => '軌跡を編集しました。',
+				'color' => 'success'
+			]);			
 
 		} else {
 
-			return redirect()->route('mypage.index')->with([
+			return redirect()->route('mypage.show')->with([
+				'id' => Auth::user()->id,
 				'flash_message' => 'クリア済みの目標です。',
 				'color' => 'danger'
 			]);
@@ -128,7 +142,11 @@ class EffortController extends Controller
 		$goal->efforts_time = $this->sumEffortsTime($efforts);
 		$goal->save();
 
-		return redirect()->route('mypage.index');
+		return redirect()->route('mypage.show')->with([
+			'id' => Auth::user()->id,
+			'flash_message' => '軌跡を削除しました。',
+			'color' => 'success'
+		]);
 	}
 
 

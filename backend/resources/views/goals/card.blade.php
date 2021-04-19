@@ -6,7 +6,7 @@
     <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
     @endif
     <div>
-      <div class="font-weight-bold">{{ $goal->user->name }}</div>
+      <div class="font-weight-bold"><a class="text-dark" href="{{route('mypage.show', ['id' => $goal->user->id ])}}">{{$goal->user->name}}</a></div>
       <div class="font-weight-lighter">{{ $goal->created_at->format('Y/m/d H:i') }}</div>
     </div>
 

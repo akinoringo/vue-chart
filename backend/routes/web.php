@@ -33,4 +33,6 @@ Route::get('/mypage/edit', 'ProfileController@edit')->name('mypage.edit')->middl
 
 Route::post('/mypage/update', 'ProfileController@update')->name('mypage.update')->middleware('auth');
 
+Route::get('/mypage/{id}', 'ProfileController@show')->name('mypage.show'); // 追記
+
 
