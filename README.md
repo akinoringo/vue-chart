@@ -20,9 +20,10 @@ http://app-kiseki.com
  - Route53
 
 ## Installation
-※ $: on terminal, [app]: on app container
+$: on terminal, [app]: on app container
 
 $ git clone https://github.com/akinoringo/laravel-kiseki.git
+
 $ docker-compose up -d
 
 - コンテナの中に入る
