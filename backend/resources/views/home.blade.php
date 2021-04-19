@@ -2,7 +2,7 @@
 
 @section('content')
 
-
+@guest
 <div class="container mt-2">
     <div class="jumbotron py-5">
       <h1 class="display-4">Kisekiとは？</h1>
@@ -21,14 +21,20 @@
     </div>
 </div>
 
+<div class="container">
+  <h3 class="mb-4">---- 最新の軌跡 ----</h3>
+</div>
+
+@endguest
+
 @include('layouts.flash')
 
-<div class="container">
+<div class="container pt-2">
   @include('efforts.search')
   @foreach($efforts as $effort) 
     @include('efforts.card')
   @endforeach
-  {{ $efforts->links()}}
+  {{$efforts->appends(request()->query())->links()}}
 </div>
 
 

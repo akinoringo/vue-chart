@@ -46,7 +46,8 @@ class ProfileController extends Controller
 		$efforts = [];
 
 		foreach ($goals as $goal) {
-			$efforts[] = Effort::where('goal_id', $goal->id)
+			$efforts[] = Effort::orderBy('created_at', 'DESC')
+				->where('goal_id', $goal->id)
 				->where(function($query) use ($search) {
 									$query->orwhere('title', 'like', "%{$search}%")
 												->orwhere('content', 'like', "%{$search}%");

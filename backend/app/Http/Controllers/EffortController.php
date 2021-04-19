@@ -13,8 +13,17 @@ use Illuminate\Support\Facades\DB;
 class EffortController extends Controller
 {
     //
-	public function index() {
-		$efforts = Effort::orderBy('created_at', 'DESC')->paginate(10);
+	public function index(Request $request) {
+
+		// 検索した語の抽出
+		$search = $request->search;		
+
+		$efforts = Effort::orderBy('created_at', 'DESC')
+			->where(function($query) use ($search) {
+									$query->orwhere('title', 'like', "%{$search}%")
+												->orwhere('content', 'like', "%{$search}%");
+			})->paginate(10);
+			
 		return view('home', compact('efforts'));
 	}
 
