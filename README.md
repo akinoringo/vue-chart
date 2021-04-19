@@ -51,7 +51,7 @@ $ docker-compose exec app bash
 [app] php artisan storage:link
 
 - アクセスの確認
-http://localhost:80
+http://localhost
 
 
 ## 機能一覧
