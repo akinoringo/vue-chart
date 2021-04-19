@@ -1,7 +1,7 @@
 <div class="card mt-3">
   <div class="card-body d-flex flex-row">
-    @if(!empty($user->image))
-    <img src="/storage/images/{{$user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+    @if(!empty($effort->user->image))
+    <img src="/storage/images/{{$effort->user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
     @else
     <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
     @endif     
@@ -59,11 +59,15 @@
 
   </div>
   <div class="card-body pt-0">
+    <div class="card-text mb-3">
+      目標： {{ $effort->goal->title }}
+    </div>    
     <h3 class="h4 card-title">
       <a class="text-dark" href="{{ route('efforts.show', ['effort' => $effort]) }}">
         {{ $effort->title }}
       </a>
     </h3>
+    
     <div class="card-text mb-3">
       <div>内容：</div>
       {{ $effort->content }}

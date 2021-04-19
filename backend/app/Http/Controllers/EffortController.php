@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Effort;
 use App\Goal;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\EffortRequest;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\DB;
 class EffortController extends Controller
 {
     //
+	public function index() {
+		$efforts = Effort::orderBy('created_at', 'DESC')->paginate(10);
+		return view('home', compact('efforts'));
+	}
+
 
 	public function create(){
 		$goals = Goal::where('user_id', Auth::user()->id)

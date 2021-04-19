@@ -14,7 +14,9 @@
 Route::get('guest', 'Auth\LoginController@guestLogin')->name('login.guest');
 
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', 'EffortController@index')->name('home');
+
+Route::get('/efforts/index', 'EffortController@index')->name('efforts.index');
 
 Route::get('/mypage/index', 'ProfileController@index')->name('mypage.index')->middleware('auth');
 
