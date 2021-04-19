@@ -14,11 +14,18 @@ class UserSeeder extends Seeder
     public function run()
     {
         //
-    	factory(User::class)->create([
-    		'id' => 1,
-    		'name' => 'akinoringo',
-    		'email' => 'test@akinori.com',
-    		'password' => Hash::make('akinoringo'),
+    	DB::table('users')->insert([
+            [
+                'id' => 1,
+        		'name' => 'akinoringo',
+        		'email' => 'test@akinori.com',
+        		'password' => Hash::make('akinoringo')
+            ],[
+                'id' => 2,
+                'name' => 'ゲストユーザー',
+                'email' => 'guest@akinori.com',
+                'password' => Hash::make('akinoringo')
+            ]
     	]);
     }
 }

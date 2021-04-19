@@ -24,8 +24,10 @@ $: on terminal, [app]: on app container
 
 $ git clone https://github.com/akinoringo/laravel-kiseki.git
 
-- ディレクトリへの移動。環境設定(docker-compose)ファイルのコピー
-$ cd laravel-kiseki && cp .env-example .env
+- ディレクトリへの移動
+$ cd laravel-kiseki
+- 環境設定(docker-compose)ファイルのコピー
+$ cp .env-example .env
 
 - コンテナの立ち上げ
 $ docker-compose up -d
@@ -43,7 +45,7 @@ $ docker-compose exec app bash
 [app] php artisan key:generate
 
 - マイグレーション
-[app]	php artisan migrate
+[app]	php artisan migrate --seed
 
 - storageリンクの生成
 [app] php artisan storage:link
