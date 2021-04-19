@@ -42,6 +42,9 @@ $ docker-compose exec app bash
 - キーの設定
 [app] php artisan key:generate
 
+- マイグレーション
+[app]	php artisan migrate
+
 - storageリンクの生成
 [app] php artisan storage:link
 
