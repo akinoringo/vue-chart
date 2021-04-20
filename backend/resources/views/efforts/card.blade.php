@@ -11,7 +11,7 @@
       <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
     </div>
 
-  @if( Auth::id() === $effort->user_id )
+  @if( Auth::id() === $effort->user_id && $effort->goal->status === 0)
     <!-- dropdown -->
       <div class="ml-auto card-text">
         <div class="dropdown">
@@ -55,7 +55,7 @@
         </div>
       </div>
       <!-- modal -->
-    @endif
+  @endif
 
   </div>
   <div class="card-body pt-0">
@@ -77,4 +77,14 @@
       {{ $effort->effort_time }}時間
     </div>    
   </div>
+  <div class="card-body pt-0">
+    <div class="card-text">
+      <effort-like>
+      </effort-like>
+    </div>    
+  </div>
+
+
+
+
 </div>

@@ -10,7 +10,7 @@
       <div class="font-weight-lighter">{{ $goal->created_at->format('Y/m/d H:i') }}</div>
     </div>
 
-  @if( Auth::id() === $goal->user_id )
+  @if( Auth::id() === $goal->user_id && $goal->status === 0)
     <!-- dropdown -->
       <div class="ml-auto card-text">
         <div class="dropdown">
@@ -54,7 +54,7 @@
         </div>
       </div>
       <!-- modal -->
-    @endif
+  @endif
 
   </div>
   <div class="card-body pt-0">
