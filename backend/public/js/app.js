@@ -2011,7 +2011,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       isLikedBy: this.initialLikedBy,
-      countLikes: this.initialCountLikes
+      countLikes: this.initialCountLikes,
+      gotTolike: false
     };
   },
   methods: {
@@ -2039,8 +2040,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 response = _context.sent;
                 _this.isLikedBy = true;
                 _this.countLikes = response.data.countLikes;
+                _this.gotTolike = true;
 
-              case 5:
+              case 6:
               case "end":
                 return _context.stop();
             }
@@ -2064,8 +2066,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 response = _context2.sent;
                 _this2.isLikedBy = false;
                 _this2.countLikes = response.data.countLikes;
+                _this2.gotTolike = false;
 
-              case 5:
+              case 6:
               case "end":
                 return _context2.stop();
             }
@@ -38538,7 +38541,10 @@ var render = function() {
       [
         _c("i", {
           staticClass: "fas fa-heart mr-1",
-          class: { "red-text": this.isLikedBy },
+          class: {
+            "red-text": this.isLikedBy,
+            "animated heartBeat fast": this.gotTolike
+          },
           on: { click: _vm.clickLike }
         })
       ]
@@ -50859,15 +50865,14 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!************************************************!*\
   !*** ./resources/js/components/EffortLike.vue ***!
   \************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EffortLike_vue_vue_type_template_id_e4d75c64___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EffortLike.vue?vue&type=template&id=e4d75c64& */ "./resources/js/components/EffortLike.vue?vue&type=template&id=e4d75c64&");
 /* harmony import */ var _EffortLike_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EffortLike.vue?vue&type=script&lang=js& */ "./resources/js/components/EffortLike.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _EffortLike_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _EffortLike_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -50897,7 +50902,7 @@ component.options.__file = "resources/js/components/EffortLike.vue"
 /*!*************************************************************************!*\
   !*** ./resources/js/components/EffortLike.vue?vue&type=script&lang=js& ***!
   \*************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

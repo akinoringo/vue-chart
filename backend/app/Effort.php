@@ -34,7 +34,7 @@ class Effort extends Model
 	{
 		return $user
 			? (bool)$this->likes->where('id', $user->id)->count()
-			:false;
+			: false;
 	}
 
 	public function getCountLikesAttribute(): int
