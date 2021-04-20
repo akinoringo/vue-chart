@@ -79,7 +79,9 @@
   </div>
   <div class="card-body pt-0">
     <div class="card-text">
-      <effort-like>
+      <effort-like
+        :initial-is-liked-by='@json($effort->isLikedBy(Auth::user()))'
+      >
       </effort-like>
     </div>    
   </div>
