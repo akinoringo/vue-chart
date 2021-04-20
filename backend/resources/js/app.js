@@ -4,17 +4,17 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+import './bootstrap'
+import Vue from 'vue'
+import EffortLike from './components/EffortLike'
 
-document.querySelector('.image-picker input')
-      .addEventListener('change', (e) => {
-          const input = e.target;
-          const reader = new FileReader();
-          reader.onload = (e) => {
-              input.closest('.image-picker').querySelector('img').src = e.target.result
-          };
-          reader.readAsDataURL(input.files[0]);
-      });
+const app = new Vue({
+	el: '#app',
+	components: {
+		EffortLike,
+	}
+})
+
 
 window.Vue = require('vue');
 
@@ -36,7 +36,3 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-const app = new Vue({
-    el: '#app',
-});
