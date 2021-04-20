@@ -36,8 +36,13 @@ class ProfileController extends Controller
 
 	}
 
-	public function edit() {
-		return view('mypage.edit')->with('user', Auth::user());
+	public function edit($id) {
+		if ($id == Auth::user()->id){
+			return view('mypage.edit')->with('user', Auth::user());	
+		} else {
+			return redirect()->back();
+		}
+		
 	}
 
 	public function update(ProfileRequest $request) {

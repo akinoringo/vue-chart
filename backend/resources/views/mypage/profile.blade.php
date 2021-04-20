@@ -16,7 +16,7 @@
             ▼  
           </a>
           <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="{{ route("mypage.edit", ['user' => Auth::user()]) }}">
+            <a class="dropdown-item" href="{{ route("mypage.edit", ['id' => $user->id]) }}">
               プロフィールを編集する
             </a>
           </div>

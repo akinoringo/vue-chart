@@ -29,7 +29,7 @@ Route::resource('/efforts', 'EffortController');
 
 
 
-Route::get('/mypage/edit', 'ProfileController@edit')->name('mypage.edit')->middleware('auth');
+Route::get('/mypage/edit/{id}', 'ProfileController@edit')->name('mypage.edit')->middleware('auth');
 
 Route::post('/mypage/update', 'ProfileController@update')->name('mypage.update')->middleware('auth');
 
