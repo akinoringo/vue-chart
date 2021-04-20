@@ -80,8 +80,10 @@
   <div class="card-body pt-0">
     <div class="card-text">
       <effort-like
-        :initial-is-liked-by='@json($effort->isLikedBy(Auth::user()))'
+        :initial-liked-by='@json($effort->isLikedBy(Auth::user()))'
         :initial-count-likes='@json($effort->count_likes)'
+        :authorized='@json(Auth::check())'
+        endpoint="{{route('efforts.like', ['effort' => $effort])}}"
       >
       </effort-like>
     </div>    
