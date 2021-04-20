@@ -165,6 +165,27 @@ class EffortController extends Controller
 	}	
 
 
+	public function like(Request $request, Effort $effort){
+		$effort->likes()->detach($request->user()->id);
+		$effort->likes()->attach($request->user()->id);
+
+		return [
+			'id' => $effort->id,
+			'countLikes' => $effort->count_likes,
+		];
+	}
+
+	public function unlike(Request $request, Effort $effort){
+
+		$effort->likes()->detach($request->user()->id);
+
+		return [
+			'id' => $effort->id,
+			'countLikes' => $effort->count_likes,
+		];
+	}	
+
+
 
 	// 軌跡の合計時間に応じて目標ステータスを更新する。
 	private function updateGoalStatus($goal, $efforts){

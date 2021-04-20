@@ -25,7 +25,10 @@ Route::resource('/goals', 'GoalController')->only(['show']);
 
 Route::resource('/efforts', 'EffortController');
 
-
+Route::prefix('efforts')->name('efforts.')->group(function(){
+	Route::put('/{efforts}/like', 'EffortController@like')->name('like')->middleware('auth');
+	Route::delete('/{efforts}/like', 'EffortController@unlike')->('unlike')->middleware('auth');
+})
 
 Route::get('/mypage/edit/{id}', 'ProfileController@edit')->name('mypage.edit')->middleware('auth');
 

@@ -81,6 +81,7 @@
     <div class="card-text">
       <effort-like
         :initial-is-liked-by='@json($effort->isLikedBy(Auth::user()))'
+        :initial-count-likes='@json($effort->count_likes)'
       >
       </effort-like>
     </div>    

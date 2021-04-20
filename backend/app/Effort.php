@@ -25,7 +25,7 @@ class Effort extends Model
 		return $this->belongsTo('App\User');
 	}
 
-	public function likes() BelongsToMany
+	public function likes():BelongsToMany
 	{
 		return $this->belongsToMany('App\User', 'likes')->withTimestamps();
 	}
@@ -35,6 +35,11 @@ class Effort extends Model
 		return $user
 			? (bool)$this->likes->where('id', $user->id)->count()
 			:false;
+	}
+
+	public function getCountLikesAttribute(): int
+	{
+		return $this->likes->count();
 	}
 
 }
