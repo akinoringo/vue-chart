@@ -9,7 +9,7 @@ COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
 
 RUN apt-get update 
 
-RUN apt-get -y install git libicu-dev libonig-dev libzip-dev unzip locales && \
+RUN apt-get -y install git libicu-dev libonig-dev libzip-dev unzip locales \
 	libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
