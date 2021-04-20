@@ -18,8 +18,6 @@ Route::get('/', 'EffortController@index')->name('home');
 
 Route::get('/efforts/index', 'EffortController@index')->name('efforts.index');
 
-Route::get('/mypage/index', 'ProfileController@index')->name('mypage.index')->middleware('auth');
-
 Auth::routes();
 
 Route::resource('/goals', 'GoalController')->except(['index, show'])->middleware('auth');
