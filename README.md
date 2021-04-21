@@ -14,10 +14,15 @@ http://app-kiseki.com
 - Laravel 6.20.22
 - MySQL 8.0.23
 - Nginx 1.18.0
+- Vue 2.6.12
 - AWS
  - VPC
  - EC2
  - Route53
+ - ACM
+ - CloudWatch
+ - SNS
+ - Chatbot
 
 ## アプリのインストール
 $: on terminal, [app]: on app container
@@ -62,8 +67,10 @@ http://localhost
 - 軌跡投稿機能(CRUD)
 - ページネーション機能
 - 部分検索機能
+- フォロー機能(非同期通信)
+- いいね機能(非同期通信)
 
-<img width="600" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/115177084-6408ad80-a109-11eb-9538-c38553fcab55.png">
+<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/115630536-242b0b80-a33f-11eb-8e38-18333a4a977f.png">
 
 ## インフラ構成図
-<img width="600" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/115180618-07a98c00-a111-11eb-92c1-638d96a9cdc6.png">
+<img width="700" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/115630032-52f4b200-a33e-11eb-9d3b-cad131c53b0c.png">
