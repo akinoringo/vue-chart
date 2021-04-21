@@ -5,9 +5,9 @@
   
   <div class="container">
   	@include('efforts.search')
-    @foreach($efforts as $effort) 
+    @foreach($efforts_follow_sorted as $effort) 
       @include('efforts.card')
     @endforeach
-    {{ $efforts->links()}}
+    {{-- {{ $efforts->links()}} --}}
   </div>
 @endsection

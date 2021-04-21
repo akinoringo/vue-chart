@@ -30,6 +30,11 @@ Route::prefix('efforts')->name('efforts.')->group(function(){
 	Route::delete('/{effort}/like', 'EffortController@unlike')->name('unlike')->middleware('auth');
 });
 
+Route::middleware('auth')->group(function(){
+	Route::put('/{name}/follow', 'ProfileController@follow')->name('follow');
+	Route::delete('/{name}/follow', 'ProfileController@unfollow')->name('unfollow');	
+});
+
 Route::get('/mypage/edit/{id}', 'ProfileController@edit')->name('mypage.edit')->middleware('auth');
 
 Route::post('/mypage/update', 'ProfileController@update')->name('mypage.update')->middleware('auth');

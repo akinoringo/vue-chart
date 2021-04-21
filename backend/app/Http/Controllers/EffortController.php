@@ -28,8 +28,40 @@ class EffortController extends Controller
 									$query->orwhere('title', 'like', "%{$search}%")
 												->orwhere('content', 'like', "%{$search}%");
 			})->paginate(10);
+
+		$user = User::where('id', Auth::user()->id)->first();
+
+		$efforts_follow = Effort::query()
+			->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
+			->latest()
+			->where(function($query) use ($search) {
+									$query->orwhere('title', 'like', "%{$search}%")
+												->orwhere('content', 'like', "%{$search}%");
+			})->paginate(10);
+
+		// $following_users = $user->followings;
+
+		// $efforts_follow = [];
+
+		// foreach ($following_users as $following_user) {
+		// 	$efforts_each = Effort::where('id', $following_user->id);
+		// 	dd($efforts_each);
+		// 	$efforts_each_rev = $efforts_each
+		// 		->where(function($query) use ($search) {
+		// 			$query->orwhere('title', 'like', "%{$search}%")
+		// 			->orwhere('title', 'like', "%{$search}%");
+		// 		})->paginate(10);
+
+		// 	dd($efforts_each_rev);
+		// 	foreach ($efforts_each as $effort) {
+		// 		$efforts_follow[] = $effort;				
+		// 	}
+		// }
+
+		// $efforts_follow_sorted = collect($efforts_follow)->sortByDesc('created_at');
+
 			
-		return view('home', compact('efforts'));
+		return view('home', compact('efforts', 'efforts_follow'));
 	}
 
 

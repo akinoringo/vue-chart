@@ -61,6 +61,35 @@ class ProfileController extends Controller
 		return redirect()->route('mypage.show', ['id' => $user->id]);
 	}
 
+	public function follow(Request $request, string $name)
+	{
+		$user = User::where('name', $name)->first();
+
+		if ($user->id === $request->user()->id)
+		{
+			return abort('404', 'Cannot follow yourself.');
+		}
+
+		$request->user()->followings()->detach($user);
+		$request->user()->followings()->attach($user);
+
+		return ['name' => $name];
+	}
+
+	public function unfollow(Request $request, string $name)
+	{
+		$user = User::where('name', $name)->first();
+
+		if ($user->id === $request->user()->id)
+		{
+			return abort('404', 'Cannot follow yourself.');
+		}
+
+		$request->user()->followings()->detach($user);
+
+		return ['name' => $name];
+	}	
+
 
 	// ユーザーと目標のステータス(0:未クリア、1:クリア済)に応じて該当する目標を全て取得
 	private function goalsGet($user, $goal_label)

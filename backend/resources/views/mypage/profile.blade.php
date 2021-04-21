@@ -29,14 +29,17 @@
         <p class="card-text mb-4">{{$user->introduction}}</p>
         <div class="card-text d-flex">
           <a href="" class="text-muted mt-2">
-            10 フォロー
+            {{ $user->count_followings}} フォロー
           </a>
           <a href="" class="text-muted mt-2">
-            10 フォロワー
+            {{ $user->count_followers}} フォロワー
           </a>
         @if( Auth::id() !== $user->id )
           <follow-button
             class="ml-4 mr-auto"
+            :initial-followed-by='@json($user->isFollowedBy(Auth::user()))'
+            :authorized='@json(Auth::check())'
+            endpoint="{{route('follow', ['name' => $user->name])}}"
           >
           </follow-button>
         @endif           
