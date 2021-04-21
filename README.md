@@ -70,6 +70,9 @@ http://localhost
 - フォロー機能(非同期通信)
 - いいね機能(非同期通信)
 
+
+## アプリ使用画面
+
 <img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/115630536-242b0b80-a33f-11eb-8e38-18333a4a977f.png">
 
 ## インフラ構成図
