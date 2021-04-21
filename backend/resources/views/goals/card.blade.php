@@ -1,10 +1,12 @@
 <div class="card mt-3">
   <div class="card-body d-flex flex-row">
-    @if(!empty($user->image))
-    <img src="/storage/images/{{$user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
-    @else
-    <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
-    @endif
+    <a href="{{ route('mypage.show', ['id' => $goal->user->id]) }}" class="text-dark">     
+      @if(!empty($goal->user->image))
+      <img src="/storage/images/{{$user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+      @else
+      <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+      @endif
+    </a>
     <div>
       <div class="font-weight-bold"><a class="text-dark" href="{{route('mypage.show', ['id' => $goal->user->id ])}}">{{$goal->user->name}}</a></div>
       <div class="font-weight-lighter">{{ $goal->created_at->format('Y/m/d H:i') }}</div>

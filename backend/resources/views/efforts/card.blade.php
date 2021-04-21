@@ -1,11 +1,12 @@
 <div class="card mt-3">
   <div class="card-body d-flex flex-row">
-    @if(!empty($effort->user->image))
-    <img src="/storage/images/{{$effort->user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
-    @else
-    <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
-    @endif     
-
+    <a href="{{ route('mypage.show', ['id' => $effort->user->id]) }}" class="text-dark">     
+      @if(!empty($effort->user->image))
+      <img src="/storage/images/{{$effort->user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+      @else
+      <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+      @endif     
+    </a>
     <div>
       <div class="font-weight-bold"><a class="text-dark" href="{{route('mypage.show', ['id' => $effort->user->id ])}}">{{$effort->user->name}}</a></div>
       <div class="font-weight-lighter">{{ $effort->created_at->format('Y/m/d H:i') }}</div>
