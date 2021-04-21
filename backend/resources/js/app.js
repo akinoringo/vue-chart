@@ -7,11 +7,14 @@
 import './bootstrap'
 import Vue from 'vue'
 import EffortLike from './components/EffortLike'
+import FollowButton from './components/FollowButton'
+
 
 const app = new Vue({
 	el: '#app',
 	components: {
 		EffortLike,
+		FollowButton,
 	}
 })
 

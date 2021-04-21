@@ -21,12 +21,27 @@
             </a>
           </div>
         </div>
-        @endif
+        @endif        
 
         <h5 class="card-title">Name</h5>
         <p class="card-text">{{ $user->name }}</p>
         <h5 class="card-title">About</h5>
-        <p class="card-text">{{$user->introduction}}</p>
+        <p class="card-text mb-4">{{$user->introduction}}</p>
+        <div class="card-text d-flex">
+          <a href="" class="text-muted mt-2">
+            10 フォロー
+          </a>
+          <a href="" class="text-muted mt-2">
+            10 フォロワー
+          </a>
+        @if( Auth::id() !== $user->id )
+          <follow-button
+            class="ml-4 mr-auto"
+          >
+          </follow-button>
+        @endif           
+        </div>
+
       </div>     
     </div>
   </div>
