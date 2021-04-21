@@ -32,8 +32,12 @@ Route::prefix('efforts')->name('efforts.')->group(function(){
 
 Route::middleware('auth')->group(function(){
 	Route::put('/{name}/follow', 'ProfileController@follow')->name('follow');
-	Route::delete('/{name}/follow', 'ProfileController@unfollow')->name('unfollow');	
+	Route::delete('/{name}/follow', 'ProfileController@unfollow')->name('unfollow');
+
 });
+
+Route::get('/{name}/followings', 'ProfileController@followings')->name('followings');
+Route::get('/{name}/followers', 'ProfileController@followers')->name('followers');
 
 Route::get('/mypage/edit/{id}', 'ProfileController@edit')->name('mypage.edit')->middleware('auth');
 

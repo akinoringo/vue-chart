@@ -40,7 +40,10 @@ class ProfileController extends Controller
 		if ($id == Auth::user()->id){
 			return view('mypage.edit')->with('user', Auth::user());	
 		} else {
-			return redirect()->back();
+			return redirect()->back()->with([
+				'flash_message' => '他のユーザーのプロフィールは編集できません。',
+				'color' => 'danger'
+			]);
 		}
 		
 	}
@@ -58,7 +61,11 @@ class ProfileController extends Controller
 
 		$user->save();
 
-		return redirect()->route('mypage.show', ['id' => $user->id]);
+		return redirect()->route('mypage.show', ['id' => $user->id])
+			->with([
+				'flash_message' => 'プロフィールを更新しました。',
+				'color' => 'success'
+			]);
 	}
 
 	public function follow(Request $request, string $name)
@@ -89,6 +96,30 @@ class ProfileController extends Controller
 
 		return ['name' => $name];
 	}	
+
+	public function followings(string $name)
+	{
+		$user = User::where('name', $name)->first();
+
+		$followings = $user->followings->sortByDesc('created_at');
+
+		return view('mypage.followings', [
+			'user' => $user,
+			'followings' => $followings,
+		]);
+	}
+
+	public function followers(string $name)
+	{
+		$user = User::where('name', $name)->first();
+
+		$followers = $user->followers->sortByDesc('created_at');
+
+		return view('mypage.followers', [
+			'user' => $user,
+			'followers' => $followers,
+		]);		
+	}
 
 
 	// ユーザーと目標のステータス(0:未クリア、1:クリア済)に応じて該当する目標を全て取得

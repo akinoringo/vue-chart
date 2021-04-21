@@ -21,10 +21,6 @@
     </div>
 </div>
 
-<div class="container">
-  <h3 class="mb-4">---- 最新の軌跡 ----</h3>
-</div>
-
 @endguest
 
 @include('layouts.flash')
@@ -37,11 +33,13 @@
         みんなの投稿
       </a>    
     </li>
+    @if (Auth::check() && isset($efforts_follow[0]))
     <li class="nav-item text-center">
       <a class="nav-link" id="pills-second-tab" data-toggle="pill" href="#pills-second" role="tab" aria-controls="pills-second" aria-selected="false">
         フォロー中
       </a>
     </li>  
+    @endif
   </ul>
 
   <div class="tab-content" id="pills-tabContent">
@@ -51,12 +49,14 @@
     @endforeach
     {{$efforts->appends(request()->query())->links()}}      
     </div>
+    @if (Auth::check() && isset($efforts_follow[0]))    
     <div class="tab-pane fade" id="pills-second" role="tabpanel" aria-labelledby="pills-second-tab">
     @foreach($efforts_follow as $effort) 
       @include('efforts.card')
     @endforeach
-    {{$efforts_follow->appends(request()->query())->links()}}     
-    </div>    
+    {{$efforts_follow->appends(request()->query())->links()}}
+    </div>
+    @endif
   </div>
 </div>
 

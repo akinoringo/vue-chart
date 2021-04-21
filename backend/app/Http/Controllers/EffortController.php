@@ -29,15 +29,22 @@ class EffortController extends Controller
 												->orwhere('content', 'like', "%{$search}%");
 			})->paginate(10);
 
-		$user = User::where('id', Auth::user()->id)->first();
+		if (Auth::check()) {
+			$efforts_follow = Effort::query()
+				->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
+				->latest()
+				->where(function($query) use ($search) {
+										$query->orwhere('title', 'like', "%{$search}%")
+													->orwhere('content', 'like', "%{$search}%");
+				})->paginate(10);	
+			
+			return view('home', compact('efforts', 'efforts_follow'));				
+		} else {
 
-		$efforts_follow = Effort::query()
-			->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
-			->latest()
-			->where(function($query) use ($search) {
-									$query->orwhere('title', 'like', "%{$search}%")
-												->orwhere('content', 'like', "%{$search}%");
-			})->paginate(10);
+			$efforts_follow = null;
+			return view('home', compact('efforts', 'efforts_follow'));
+		}
+
 
 		// $following_users = $user->followings;
 
@@ -61,7 +68,7 @@ class EffortController extends Controller
 		// $efforts_follow_sorted = collect($efforts_follow)->sortByDesc('created_at');
 
 			
-		return view('home', compact('efforts', 'efforts_follow'));
+		
 	}
 
 
