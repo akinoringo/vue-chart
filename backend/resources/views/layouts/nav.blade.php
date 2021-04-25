@@ -1,23 +1,10 @@
+@auth
 <nav class="navbar navbar-expand navbar-dark bg-dark">
 
   <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Kiseki</a>
 
   <ul class="navbar-nav ml-auto">
-    @guest 
-    <li class="nav-item">
-      <a class="nav-link" href="{{ route('register') }}">ユーザー登録</a> 
-    </li>
 
-    <li class="nav-item">
-      <a class="nav-link" href="{{ route('login') }}">ログイン</a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link" href="{{ route('login.guest') }}">ゲストログイン</a>
-    </li>    
-    @endguest 
-
-    @auth
     <li class="nav-item">
       <a class="nav-link" href="{{route('goals.create')}}">目標作成</a>
     </li>
@@ -25,9 +12,7 @@
     <li class="nav-item">
       <a class="nav-link" href="{{route('efforts.create')}}">軌跡作成</a>
     </li>
-    @endauth
 
-    @auth
     <!-- Dropdown -->
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -49,8 +34,44 @@
       @csrf
     </form>
     <!-- Dropdown -->
-    @endauth
 
   </ul>
 
 </nav>
+@endauth
+
+@guest
+<!--Navbar-->
+<nav class="navbar navbar-dark bg-dark lighten-4 mb-4">
+
+  <!-- Navbar brand -->
+  <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Kiseki</a>s
+
+  <!-- Collapse button -->
+  <button class="navbar-toggler toggler-example navbar-dark darken-3" type="button" data-toggle="collapse"
+    data-target="#navbarSupportedContent41" aria-controls="navbarSupportedContent41" aria-expanded="false"
+    aria-label="Toggle navigation"><span class="white-text"><i class="fas fa-bars fa-1x"></i></span></button>
+
+  <!-- Collapsible content -->
+  <div class="collapse navbar-collapse" id="navbarSupportedContent41">
+
+    <!-- Links -->
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('register') }}">ユーザー登録 <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('login') }}">ログイン</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('login.guest') }}">ゲストログイン</a>
+      </li>
+    </ul>
+    <!-- Links -->
+
+  </div>
+  <!-- Collapsible content -->
+
+</nav>
+<!--/.Navbar-->
+@endguest
