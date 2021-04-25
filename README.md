@@ -16,13 +16,13 @@ http://app-kiseki.com
 - Nginx 1.18.0
 - Vue 2.6.12
 - AWS
- - VPC
- - EC2
- - Route53
- - ACM
- - CloudWatch
- - SNS
- - Chatbot
+	- VPC
+ 	- EC2
+	- Route53
+	- ACM
+	- CloudWatch
+	- SNS
+	- Chatbot
 
 ## アプリのインストール
 $: on terminal, [app]: on app container
