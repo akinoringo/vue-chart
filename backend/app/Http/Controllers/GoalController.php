@@ -19,32 +19,38 @@ class GoalController extends Controller
 	public function create() {
 		$user = Auth::user();
 
-		// ユーザーに紐づく目標を取得し、未達成(statu:0)の目標数をカウントする。
-		$number = Goal::where('user_id', $user->id)
-			->where(function($goals) {
-				$goals->where('status', 0);
-		})->count();
+		// ユーザーに紐づく目標を取得し、ステータスが未達成(statu:0)の目標数をカウント。
+		$number = $this->GoalCount($user);
 
 		// 目標が３つの場合は、新たに作成不可。
 		if ($number !== 3){
+
 			return view('goals.create');
 		} else {
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
+
+			return redirect()
+				->route('mypage.show', ['id' => Auth::user()->id])
+				->with([
 				'flash_message' => '同時に登録できる目標は3つまでです。',
 				'color' => 'danger'
 			]);
 		}
 	}
+	
 
-	// フォームリクエストで取得した情報をフィルターして保存
 	public function store(GoalRequest $request, Goal $goal) {
+		// フォームリクエストで取得した情報をフィルターして保存
 		$goal->fill($request->all());
+
 		$goal->user_id = $request->user()->id;
 		$goal->save();
-		return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-			'flash_message' => '目標を登録しました。',
-			'color' => 'success'
-		]);
+
+		return redirect()
+						->route('mypage.show', ['id' => Auth::user()->id])
+						->with([
+							'flash_message' => '目標を登録しました。',
+							'color' => 'success',
+						]);
 	}
 
 	public function edit(Goal $goal)
@@ -91,5 +97,14 @@ class GoalController extends Controller
 			'goal' => $goal,
 			'user' => Auth::user()
 		]);
-	}			
+	}
+
+	private function GoalCount(User $user) {
+		$number = Goal::where('user_id', $user->id)
+			->where(function($goals) {
+				$goals->where('status', 0);
+		})->count();
+
+		return $number;		
+	}	
 }
