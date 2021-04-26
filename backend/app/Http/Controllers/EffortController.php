@@ -18,18 +18,22 @@ class EffortController extends Controller
 		$this->authorizeResource(Effort::class, 'effort');
 	}
 
-
-
+	/**
+		* 軌跡一覧の表示
+		* @param Request $request
+		* @param Effort $effort
+		* @return  \Illuminate\Http\Response
+	*/
 	public function index(Request $request) {
 
-		// 検索語の抽出
+		// 検索語の取得
 		$search = $request->search;		
 
-		// みんなの軌跡を検索語でソートして作成順に並び替えて取得
+		// 全ての軌跡を検索語でソートして作成順に並び替えて取得
 		$efforts = $this->getEffortsAll($search);
 
-		// フォロー中の軌跡を検索語でソートして作成順に並び替えて取得
-		// フォローしていない場合はnullを返す
+		// フォロー中の人の軌跡を検索語でソートして作成順に並び替えて取得
+		// 誰もフォローしていない場合はnullを代入
 		if (Auth::check()) {
 			$efforts_follow = $this->getEffortsFollow($search);
 			
@@ -42,8 +46,11 @@ class EffortController extends Controller
 
 	}
 
-
-
+	/**
+		* 軌跡詳細画面の表示
+		* @param Effort $effort
+		* @return  \Illuminate\Http\Response
+	*/
 	public function show(Effort $effort)
 	{
 		return view('efforts.show', [
@@ -52,12 +59,17 @@ class EffortController extends Controller
 		]);
 	}	
 
-
-
+	/**
+		* 軌跡作成フォームの表示
+		* @param Request $request
+		* @param Goal $goal
+		* @return  \Illuminate\Http\Response
+	*/
 	public function create(){
 		// 自身の未達成の目標を取得
 		$goals = $this->myGoalsGet();
 
+		// 未達成の目標がない場合は、マイページへリダイレクト
 		if (!isset($goals[0])) {
 
 			return redirect()
@@ -71,8 +83,13 @@ class EffortController extends Controller
 		return view('efforts.create', compact('goals'));
 	}
 
-
-
+	/**
+		* 軌跡の登録
+		* @param EffortRequest $request
+		* @param Goal $goal
+		* @param Effort $effort
+		* @return  \Illuminate\Http\RedirectResponse
+	*/
 	public function store(EffortRequest $request, Effort $effort ){
 		//軌跡の保存処理
 		$effort->fill($request->all());
@@ -108,8 +125,11 @@ class EffortController extends Controller
 
 	}
 
-
-
+	/**
+		* 軌跡の編集画面
+		* @param Effort $effort
+		* @return  \Illuminate\Http\Response
+	*/
 	public function edit(Effort $effort){
 		// 自身の未達成の目標を取得
 		$goals = $this->myGoalsGet();
@@ -117,8 +137,13 @@ class EffortController extends Controller
 		return view('efforts.edit', compact('effort', 'goals'));
 	}	
 
-
-
+	/**
+		* 軌跡の更新
+		* @param EffortRequest $request
+		* @param Goal $goal
+		* @param Effort $effort
+		* @return  \Illuminate\Http\RedirectResponse
+	*/
 	public function update(EffortRequest $request, Effort $effort){
 
 		$effort->fill($request->all())->save();
@@ -155,8 +180,12 @@ class EffortController extends Controller
 
 	}	
 
-
-
+	/**
+		* 軌跡の削除
+		* @param Goal $goal
+		* @param Effort $effort
+		* @return  \Illuminate\Http\RedirectResponse
+	*/
 	public function destroy(Effort $effort)
 	{
 		// 軌跡に紐づく目標の取得
@@ -193,7 +222,12 @@ class EffortController extends Controller
 	}
 
 
-
+	/**
+		* 軌跡へのいいね
+		* @param Request $request
+		* @param Effort $effort
+		* @return  array
+	*/
 	public function like(Request $request, Effort $effort){
 		$effort->likes()->detach($request->user()->id);
 		$effort->likes()->attach($request->user()->id);
@@ -205,7 +239,12 @@ class EffortController extends Controller
 	}
 
 
-
+	/**
+		* 軌跡へのいいね解除
+		* @param Request $request
+		* @param Effort $effort
+		* @return  array
+	*/
 	public function unlike(Request $request, Effort $effort){
 
 		$effort->likes()->detach($request->user()->id);
@@ -216,9 +255,11 @@ class EffortController extends Controller
 		];
 	}	
 
-
-
-	// みんなの軌跡を取得
+	/** 
+		* 全ての軌跡を検索語でソートして取得する
+		* @param Effort $effort
+		* @return  LengthAwarePaginator
+	*/
 	private function getEffortsAll($search) {
 		$efforts = Effort::orderBy('created_at', 'DESC')
 							->where(function($query) use ($search) {
@@ -229,9 +270,11 @@ class EffortController extends Controller
 		return $efforts;
 	}
 
-
-
-	// フォロー中の人の軌跡の取得
+	/** 
+		* フォロー中の人の軌跡を検索語でソートして取得する
+		* @param Effort $effort
+		* @return  LengthAwarePaginator
+	*/
 	private function getEffortsFollow($search) {
 		$efforts_follow = Effort::query()
 			->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
@@ -245,19 +288,27 @@ class EffortController extends Controller
 	}
 
 
-
-	// 進行中の自分の目標の取得	
+	/** 
+		* 自身の未達成の目標を取得する
+		* @param Goal $goal
+		* @return  Builder
+	*/
 	private function myGoalsGet() {
 		$goals = Goal::where('user_id', Auth::user()->id)
 							->where(function($goals){
 								$goals->where('status', 0);
 							})->get();
+
 		return $goals;		
 	}
 
 
-
-	// 軌跡の合計時間に応じて目標ステータスを更新する。
+	/** 
+		* 軌跡の合計時間を計算し、目標ステータスを更新する
+		* @param Goal $goal
+		* @param Effort $effort		
+		* @return  void
+	*/
 	private function updateGoalStatus($goal, $efforts){
 
 		if ($goal->goal_time <= $this->sumEffortsTime($efforts)) {
@@ -280,9 +331,11 @@ class EffortController extends Controller
 
 	}
 
-	
-
-	// 軌跡の合計時間の算出メソッド
+	/** 
+		* 軌跡の合計時間を計算する
+		* @param Effort $effort		
+		* @return  int
+	*/
 	private function sumEffortsTime($efforts) {
 		$total_efforts_time = 0;
 
