@@ -16,6 +16,14 @@ class GoalController extends Controller
 		$this->authorizeResource(Goal::class, 'goal');
 	}
 
+	public function show(Goal $goal)
+	{
+		return view('goals.show', [
+			'goal' => $goal,
+			'user' => Auth::user()
+		]);
+	}	
+
 	public function create() {
 		$user = Auth::user();
 
@@ -36,7 +44,7 @@ class GoalController extends Controller
 			]);
 		}
 	}
-	
+
 
 	public function store(GoalRequest $request, Goal $goal) {
 		// フォームリクエストで取得した情報をフィルターして保存
@@ -53,51 +61,59 @@ class GoalController extends Controller
 						]);
 	}
 
+
 	public function edit(Goal $goal)
 	{
 		if ($goal->status === 0){
+
 			return view('goals.edit', ['goal' => $goal]);			
 		} else {
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => 'クリア済みの目標は編集できません',
-				'color' => 'danger'
-			]);			
+
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => 'クリア済みの目標は編集できません',
+								'color' => 'danger'
+							]);			
 		}
 
 	}
 
+
 	public function update(GoalRequest $request, Goal $goal)
 	{
 		$goal->fill($request->all())->save();
-		return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-			'flash_message' => '目標を編集しました。',
-			'color' => 'success'			
-		]);
+		return redirect()
+						->route('mypage.show', ['id' => Auth::user()->id])
+						->with([
+							'flash_message' => '目標を編集しました。',
+							'color' => 'success'			
+						]);
 	}	
 
 	public function destroy(Goal $goal)
 	{
 		if ($goal->status === 0){
+
 			$goal->delete();
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => '目標を削除しました。',
-				'color' => 'success'			
-			]);
+
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => '目標を削除しました。',
+								'color' => 'success'			
+							]);
 		} else {
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => 'クリア済みの目標は削除できません',
-				'color' => 'danger'
-			]);			
+
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => 'クリア済みの目標は削除できません',
+								'color' => 'danger'
+							]);			
 		}
 	}		
 
-	public function show(Goal $goal)
-	{
-		return view('goals.show', [
-			'goal' => $goal,
-			'user' => Auth::user()
-		]);
-	}
 
 	private function GoalCount(User $user) {
 		$number = Goal::where('user_id', $user->id)
