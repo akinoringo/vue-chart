@@ -15,6 +15,15 @@ use Intervention\Image\Facades\Image;
 
 class ProfileController extends Controller
 {
+	/**
+		* マイページの表示
+		* プロフィール、目標および軌跡を表示
+		* @param Request $request
+		* @param User $user
+		* @param Goal $goal
+		* @param Effort $effort
+		* @return  \Illuminate\Http\Response
+	*/	
 	public function show($id, Request $request) {
 
 		// viewから受け渡された$idに対応するユーザーの取得
@@ -36,6 +45,10 @@ class ProfileController extends Controller
 
 	}
 
+	/**
+		* プロフィールの編集画面表示
+		* @return  \Illuminate\Http\Response or \Illuminate\Http\RedirectResponse
+	*/	
 	public function edit($id) {
 		if ($id == Auth::user()->id){
 			return view('mypage.edit')->with('user', Auth::user());	
@@ -48,12 +61,18 @@ class ProfileController extends Controller
 		
 	}
 
+	/**
+		* プロフィールの更新
+		* @param ProfileRequest $request
+		* @return \Illuminate\Http\RedirectResponse
+	*/	
 	public function update(ProfileRequest $request) {
 		$user = Auth::user();
 
 		$user->name = $request->input('name');
 		$user->introduction = $request->input('introduction');
 
+		// リクエストに画像があれば、画像を保存し、imageカラムに画像のパス/名前を保存する
 		if ($request->has('image')){
 			$fileName = $this->saveImage($request->file('image'));
 			$user->image = $fileName;
@@ -68,6 +87,11 @@ class ProfileController extends Controller
 			]);
 	}
 
+	/**
+		* ユーザーのフォロー
+		* @param ProfileRequest $request
+		* @return Array
+	*/	
 	public function follow(Request $request, string $name)
 	{
 		$user = User::where('name', $name)->first();
@@ -83,6 +107,11 @@ class ProfileController extends Controller
 		return ['name' => $name];
 	}
 
+	/**
+		* ユーザーのフォロー取り消し
+		* @param ProfileRequest $request
+		* @return Array
+	*/	
 	public function unfollow(Request $request, string $name)
 	{
 		$user = User::where('name', $name)->first();
@@ -97,6 +126,10 @@ class ProfileController extends Controller
 		return ['name' => $name];
 	}	
 
+	/**
+		* フォローしているユーザーの表示
+		* @return \Illuminate\Http\Response
+	*/	
 	public function followings(string $name)
 	{
 		$user = User::where('name', $name)->first();
@@ -109,6 +142,10 @@ class ProfileController extends Controller
 		]);
 	}
 
+	/**
+		* フォロワーの表示
+		* @return \Illuminate\Http\Response
+	*/	
 	public function followers(string $name)
 	{
 		$user = User::where('name', $name)->first();
@@ -121,8 +158,11 @@ class ProfileController extends Controller
 		]);		
 	}
 
-
-	// ユーザーと目標のステータス(0:未クリア、1:クリア済)に応じて該当する目標を全て取得
+	/**
+		* ユーザーの(未達成or達成済みの)目標を全て取得する
+		* @param Goal $goal
+		* @return Builder
+	*/		
 	private function goalsGet($user, $goal_label)
 	{
 		if ($goal_label == 1) {
@@ -140,7 +180,12 @@ class ProfileController extends Controller
 		return $goals;
 	}
 
-	// 目標に紐づく軌跡(複数)を配列で取得する。
+	/**
+		* 目標に紐づく軌跡を配列で取得する
+		* @param Goal $goal
+		* @param Effort $effort
+		* @return Array
+	*/
 	private function effortsGet($goals, $search)
 	{
 
@@ -157,9 +202,12 @@ class ProfileController extends Controller
 
 		return $efforts;
 	}
-
 	
-	//プロフィール画像をリサイズして保存するメソッド		
+	/**
+		* 画像をリサイズして保存する
+		* @param UoloadFile $file
+		* @return String
+	*/		
 	private function saveImage(UploadedFile $file):string
 	{
 		$tempPath = $this->makeTempPath();
@@ -170,7 +218,11 @@ class ProfileController extends Controller
 
 		return basename($filePath);
 	}
-	//一時的なファイルパスを生成してパスを返すメソッド	
+
+	/**
+		* 一時的なファイルパスを生成してパスを返す
+		* @return String
+	*/		
 	private function makeTempPath():string
 	{
 		$tmp_fp = tmpfile();
