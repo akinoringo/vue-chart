@@ -27,7 +27,14 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/mypage/show';
+
+    protected function redirectTo() {
+        if (! Auth::user()) {
+            return redirect('/');
+        }
+        return route('mypage.show', ['id'=> Auth::user()->id]);
+    }
 
     /**
      * Create a new controller instance.
@@ -44,7 +51,7 @@ class LoginController extends Controller
     public function guestLogin()
     {
         if (Auth::loginUsingId(self::GUEST_USER_ID)) {
-            return redirect('/');
+            return redirect()->route('mypage.show', ['id'=> self::GUEST_USER_ID]);
         }
 
         return redirect('/');
