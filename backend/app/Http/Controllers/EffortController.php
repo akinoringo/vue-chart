@@ -20,23 +20,16 @@ class EffortController extends Controller
 
 	public function index(Request $request) {
 
-		// 検索した語の抽出
+		// 検索語の抽出
 		$search = $request->search;		
 
-		$efforts = Effort::orderBy('created_at', 'DESC')
-			->where(function($query) use ($search) {
-									$query->orwhere('title', 'like', "%{$search}%")
-												->orwhere('content', 'like', "%{$search}%");
-			})->paginate(10);
+		// みんなの軌跡を検索語でソートして作成順に並び替えて取得
+		$efforts = getEffortsAll($search);
 
+		// フォロー中の軌跡を検索語でソートして作成順に並び替えて取得
+		// フォローしていない場合はnullを返す
 		if (Auth::check()) {
-			$efforts_follow = Effort::query()
-				->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
-				->latest()
-				->where(function($query) use ($search) {
-										$query->orwhere('title', 'like', "%{$search}%")
-													->orwhere('content', 'like', "%{$search}%");
-				})->paginate(10);	
+			$efforts_follow = getEffortsFollow($search);
 			
 			return view('home', compact('efforts', 'efforts_follow'));				
 		} else {
@@ -45,30 +38,6 @@ class EffortController extends Controller
 			return view('home', compact('efforts', 'efforts_follow'));
 		}
 
-
-		// $following_users = $user->followings;
-
-		// $efforts_follow = [];
-
-		// foreach ($following_users as $following_user) {
-		// 	$efforts_each = Effort::where('id', $following_user->id);
-		// 	dd($efforts_each);
-		// 	$efforts_each_rev = $efforts_each
-		// 		->where(function($query) use ($search) {
-		// 			$query->orwhere('title', 'like', "%{$search}%")
-		// 			->orwhere('title', 'like', "%{$search}%");
-		// 		})->paginate(10);
-
-		// 	dd($efforts_each_rev);
-		// 	foreach ($efforts_each as $effort) {
-		// 		$efforts_follow[] = $effort;				
-		// 	}
-		// }
-
-		// $efforts_follow_sorted = collect($efforts_follow)->sortByDesc('created_at');
-
-			
-		
 	}
 
 
@@ -223,6 +192,32 @@ class EffortController extends Controller
 			'countLikes' => $effort->count_likes,
 		];
 	}	
+
+	// みんなの軌跡を取得
+	private function getEffortsAll($search) {
+		$efforts = Effort::orderBy('created_at', 'DESC')
+							->where(function($query) use ($search) {
+								$query->orwhere('title', 'like', "%{$search}%")
+											->orwhere('content', 'like', "%{$search}%");
+							})->paginate(10);
+
+		return $efforts;
+	}
+
+	// フォロー中の人の軌跡の取得
+	private function getEffortsFollow($search) {
+		$efforts_follow = Effort::query()
+			->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
+			->orderBy('created_at', 'DESC')
+			->where(function($query) use ($search) {
+									$query->orwhere('title', 'like', "%{$search}%")
+												->orwhere('content', 'like', "%{$search}%");
+			})->paginate(10);	
+
+		return $efforts_follow;
+	}
+
+	
 
 
 
