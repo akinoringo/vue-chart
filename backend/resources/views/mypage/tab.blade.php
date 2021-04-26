@@ -1,6 +1,6 @@
 
 
-@if($goals)
+@if(isset($goals[0]))
 <ul class="nav nav-pills mb-3 mt-2" id="pills-tab" role="tablist">
   @if(isset($goals[0]))
   <li class="nav-item text-center">
