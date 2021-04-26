@@ -50954,6 +50954,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+document.querySelector('.image-picker input').addEventListener('change', function (e) {
+  var input = e.target;
+  var reader = new FileReader();
+
+  reader.onload = function (e) {
+    input.closest('.image-picker').querySelector('img').src = e.target.result;
+  };
+
+  reader.readAsDataURL(input.files[0]);
+});
 var app = new vue__WEBPACK_IMPORTED_MODULE_1___default.a({
   el: '#app',
   components: {

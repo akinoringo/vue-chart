@@ -33,7 +33,6 @@
               @include('layouts.error_card_list')
 
               <div class="card-text">
-                {{--ここから--}}
                 <form method="POST" action="{{ route('mypage.update') }}" enctype="multipart/form-data">
                   @csrf
 
@@ -75,7 +74,13 @@
       </div>
     </div>
   </div>
+  
   @include('layouts.footer')
+
+  <script src="{{ mix('js/app.js') }}"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.11/js/mdb.min.js"></script>
+
 </body>
-<script src="{{ asset('js/app.js') }}" defer></script>
-</html>  
+
+</html>
