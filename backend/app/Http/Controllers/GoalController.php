@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Auth;
 
 class GoalController extends Controller
 {
-    //
+  // GoalPolicyでCRUD操作を制限
 	public function __construct()
 	{
 		$this->authorizeResource(Goal::class, 'goal');
 	}
+
+
 
 	public function show(Goal $goal)
 	{
@@ -24,13 +26,15 @@ class GoalController extends Controller
 		]);
 	}	
 
+
+
 	public function create() {
 		$user = Auth::user();
 
 		// ユーザーに紐づく目標を取得し、ステータスが未達成(statu:0)の目標数をカウント。
 		$number = $this->GoalCount($user);
 
-		// 目標が３つの場合は、新たに作成不可。
+		// 未達成の目標が上限(３つ)の場合は、新たに作成不可。
 		if ($number !== 3){
 
 			return view('goals.create');
@@ -44,6 +48,7 @@ class GoalController extends Controller
 			]);
 		}
 	}
+
 
 
 	public function store(GoalRequest $request, Goal $goal) {
@@ -60,6 +65,7 @@ class GoalController extends Controller
 							'color' => 'success',
 						]);
 	}
+
 
 
 	public function edit(Goal $goal)
@@ -80,6 +86,7 @@ class GoalController extends Controller
 	}
 
 
+
 	public function update(GoalRequest $request, Goal $goal)
 	{
 		$goal->fill($request->all())->save();
@@ -90,6 +97,8 @@ class GoalController extends Controller
 							'color' => 'success'			
 						]);
 	}	
+
+
 
 	public function destroy(Goal $goal)
 	{
@@ -112,7 +121,8 @@ class GoalController extends Controller
 								'color' => 'danger'
 							]);			
 		}
-	}		
+	}	
+
 
 
 	private function GoalCount(User $user) {

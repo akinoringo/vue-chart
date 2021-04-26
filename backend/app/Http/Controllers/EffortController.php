@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\DB;
 
 class EffortController extends Controller
 {
-    //
+  // EffortPolicyでCRUD操作を制限
 	public function __construct()
 	{
 		$this->authorizeResource(Effort::class, 'effort');
 	}
+
+
 
 	public function index(Request $request) {
 
@@ -24,12 +26,12 @@ class EffortController extends Controller
 		$search = $request->search;		
 
 		// みんなの軌跡を検索語でソートして作成順に並び替えて取得
-		$efforts = getEffortsAll($search);
+		$efforts = $this->getEffortsAll($search);
 
 		// フォロー中の軌跡を検索語でソートして作成順に並び替えて取得
 		// フォローしていない場合はnullを返す
 		if (Auth::check()) {
-			$efforts_follow = getEffortsFollow($search);
+			$efforts_follow = $this->getEffortsFollow($search);
 			
 			return view('home', compact('efforts', 'efforts_follow'));				
 		} else {
@@ -41,22 +43,34 @@ class EffortController extends Controller
 	}
 
 
+
+	public function show(Effort $effort)
+	{
+		return view('efforts.show', [
+			'effort' => $effort,
+			'user' => Auth::user()
+		]);
+	}	
+
+
+
 	public function create(){
-		$goals = Goal::where('user_id', Auth::user()->id)
-			->where(function($goals){
-				$goals->where('status', 0);
-			})->get();
+		// 自身の未達成の目標を取得
+		$goals = $this->myGoalsGet();
 
 		if (!isset($goals[0])) {
 
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => 'まずは目標を作成してください',
-				'color' => 'danger'
-			]);
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => 'まずは目標を作成してください',
+								'color' => 'danger'
+							]);
 		}
 
 		return view('efforts.create', compact('goals'));
 	}
+
 
 
 	public function store(EffortRequest $request, Effort $effort ){
@@ -66,41 +80,44 @@ class EffortController extends Controller
 		$effort->user_id = $request->user()->id;
 		$effort->save();
 
-		// 軌跡に紐づく目標と、目標に紐づく軌跡を全て抽出
+		// 軌跡に紐づく目標を取得
 		$goal = Goal::where('id', $request->goal_id)->get()->first();
+
+		// 目標に紐づく軌跡の継続時間の合計をDBに保存。
 		$efforts = Effort::where('goal_id', $request->goal_id)->get();
-
-		// $goalに紐づくeffortsの取り組み時間の合計値($goal->efforts_time)をDBに保存。
-
 		$goal->efforts_time = $this->sumEffortsTime($efforts);
 		$goal->save();
 
-		//目標のステータスが0(目標未達成)の場合、goal_time>total(effort_time)であれば目標ステータスを1に更新する。
+		// 目標が未達成(ステータス:0)の場合、
+		// 目標時間>合計継続時間であれば目標ステータスを1に更新
 		if($goal->status === 0) {
 			
 			$this->updateGoalStatus($goal, $efforts);
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id]);			
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id]);			
 
 		} else {
-
-			return redirect()->route('mypage.show',['id' => Auth::user()->id])->with([
-				'flash_message' => 'クリア済みの目標です。',
-				'color', 'danger'
-			]);
+			// 目標が未達成(ステータス:0)の場合、軌跡の更新不可
+			return redirect()
+							->route('mypage.show',['id' => Auth::user()->id])
+							->with([
+								'flash_message' => 'クリア済みの目標です。',
+								'color', 'danger'
+							]);
 		}
-
 
 	}
 
+
+
 	public function edit(Effort $effort){
-		// $goals = Goal::all()->sortByDesc('created_at');
-		$goals = Goal::where('user_id', Auth::user()->id)
-			->where(function($goals){
-				$goals->where('status', 0);
-			})->get();
+		// 自身の未達成の目標を取得
+		$goals = $this->myGoalsGet();
 
 		return view('efforts.edit', compact('effort', 'goals'));
 	}	
+
+
 
 	public function update(EffortRequest $request, Effort $effort){
 
@@ -108,9 +125,9 @@ class EffortController extends Controller
 
 		// 軌跡に紐づく目標と、目標に紐づく軌跡を全て抽出
 		$goal = Goal::where('id', $effort->goal_id)->get()->first();
-		$efforts = Effort::where('goal_id', $effort->goal_id)->get();
 
-		// $goalに紐づくeffortsの取り組み時間の合計値($goal->efforts_time)をDBに保存。
+		// 目標に紐づく軌跡の継続時間の合計をDBに保存
+		$efforts = Effort::where('goal_id', $effort->goal_id)->get();
 		$goal->efforts_time = $this->sumEffortsTime($efforts);
 		$goal->save();		
 
@@ -119,26 +136,33 @@ class EffortController extends Controller
 			
 			$this->updateGoalStatus($goal, $efforts);
 
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => '軌跡を編集しました。',
-				'color' => 'success'
-			]);			
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => '軌跡を編集しました。',
+								'color' => 'success'
+							]);			
 
 		} else {
 
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => 'クリア済みの目標なので、軌跡は編集できません。',
-				'color' => 'danger'
-			]);
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => 'クリア済みの目標なので、軌跡は編集できません。',
+								'color' => 'danger'
+							]);
 		}
 
 	}	
 
+
+
 	public function destroy(Effort $effort)
 	{
-		// $effortに紐づく$goalの取得
+		// 軌跡に紐づく目標の取得
 		$goal = Goal::where('id', $effort->goal_id)->get()->first();
 
+		// 軌跡に紐づく目標が未達成の場合は、軌跡を削除可能。
 		if ($goal->status === 0) {
 
 			// $effortの消去
@@ -149,28 +173,25 @@ class EffortController extends Controller
 			$goal->efforts_time = $this->sumEffortsTime($efforts);
 			$goal->save();
 		
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => '軌跡を削除しました。',
-				'color' => 'success'
-			]);			
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => '軌跡を削除しました。',
+								'color' => 'success'
+							]);			
 		} else {
-			return redirect()->route('mypage.show', ['id' => Auth::user()->id])->with([
-				'flash_message' => 'クリア済みの目標なので、軌跡は削除できません。',
-				'color' => 'danger'
-			]);			
+			// 軌跡に紐づく目標がすでに達成済みの場合は、軌跡を削除不可。
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => 'クリア済みの目標なので、軌跡は削除できません。',
+								'color' => 'danger'
+							]);			
 		}
 
 
 	}
 
-
-	public function show(Effort $effort)
-	{
-		return view('efforts.show', [
-			'effort' => $effort,
-			'user' => Auth::user()
-		]);
-	}	
 
 
 	public function like(Request $request, Effort $effort){
@@ -183,6 +204,8 @@ class EffortController extends Controller
 		];
 	}
 
+
+
 	public function unlike(Request $request, Effort $effort){
 
 		$effort->likes()->detach($request->user()->id);
@@ -192,6 +215,8 @@ class EffortController extends Controller
 			'countLikes' => $effort->count_likes,
 		];
 	}	
+
+
 
 	// みんなの軌跡を取得
 	private function getEffortsAll($search) {
@@ -203,6 +228,8 @@ class EffortController extends Controller
 
 		return $efforts;
 	}
+
+
 
 	// フォロー中の人の軌跡の取得
 	private function getEffortsFollow($search) {
@@ -217,7 +244,16 @@ class EffortController extends Controller
 		return $efforts_follow;
 	}
 
-	
+
+
+	// 進行中の自分の目標の取得	
+	private function myGoalsGet() {
+		$goals = Goal::where('user_id', Auth::user()->id)
+							->where(function($goals){
+								$goals->where('status', 0);
+							})->get();
+		return $goals;		
+	}
 
 
 
@@ -243,6 +279,8 @@ class EffortController extends Controller
 		}		
 
 	}
+
+	
 
 	// 軌跡の合計時間の算出メソッド
 	private function sumEffortsTime($efforts) {
