@@ -16,8 +16,11 @@ class GoalController extends Controller
 		$this->authorizeResource(Goal::class, 'goal');
 	}
 
-
-
+	/**
+		* 目標詳細画面の表示
+		* @param Goal $goal
+		* @return  \Illuminate\Http\Response
+	*/
 	public function show(Goal $goal)
 	{
 		return view('goals.show', [
@@ -26,8 +29,11 @@ class GoalController extends Controller
 		]);
 	}	
 
-
-
+	/**
+		* 目標作成フォームの表示
+		* @param Request $request
+		* @return  \Illuminate\Http\Response
+	*/
 	public function create() {
 		$user = Auth::user();
 
@@ -49,8 +55,12 @@ class GoalController extends Controller
 		}
 	}
 
-
-
+	/**
+		* 目標の登録
+		* @param GoalRequest $request
+		* @param Goal $goal
+		* @return  \Illuminate\Http\RedirectResponse
+	*/
 	public function store(GoalRequest $request, Goal $goal) {
 		// フォームリクエストで取得した情報をフィルターして保存
 		$goal->fill($request->all());
@@ -66,8 +76,12 @@ class GoalController extends Controller
 						]);
 	}
 
-
-
+	/**
+		* 目標の編集画面
+		* @param GoalRequest $request
+		* @param Goal $goal
+		* @return  \Illuminate\Http\RedirectResponse
+	*/
 	public function edit(Goal $goal)
 	{
 		if ($goal->status === 0){
@@ -85,8 +99,12 @@ class GoalController extends Controller
 
 	}
 
-
-
+	/**
+		* 目標の更新
+		* @param GoalRequest $request
+		* @param Goal $goal
+		* @return  \Illuminate\Http\RedirectResponse
+	*/
 	public function update(GoalRequest $request, Goal $goal)
 	{
 		$goal->fill($request->all())->save();
@@ -98,8 +116,11 @@ class GoalController extends Controller
 						]);
 	}	
 
-
-
+	/**
+		* 目標の削除
+		* @param Goal $goal
+		* @return  \Illuminate\Http\RedirectResponse
+	*/
 	public function destroy(Goal $goal)
 	{
 		if ($goal->status === 0){
@@ -123,8 +144,11 @@ class GoalController extends Controller
 		}
 	}	
 
-
-
+	/**
+		* 未達成の目標数をカウントする
+		* @param Goal $goal
+		* @return  int $number
+	*/
 	private function GoalCount(User $user) {
 		$number = Goal::where('user_id', $user->id)
 			->where(function($goals) {
