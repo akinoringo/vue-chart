@@ -61,7 +61,9 @@
   </div>
   <div class="card-body pt-0">
     <div class="card-text mb-3">
-      目標： {{ $effort->goal->title }}
+      <a class="text-dark" href="{{ route('goals.show', ['goal' => $effort->goal]) }}">
+        <span class="border px-1">目標</span> {{ $effort->goal->title }}
+      </a>
     </div>    
     <h3 class="h4 card-title">
       <a class="text-dark" href="{{ route('efforts.show', ['effort' => $effort]) }}">
