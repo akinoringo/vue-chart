@@ -38665,9 +38665,9 @@ var render = function() {
       { staticClass: "btn m-0 p-1 shadow-none", attrs: { type: "button" } },
       [
         _c("i", {
-          staticClass: "fas fa-heart mr-1",
+          staticClass: "fas fa-laugh mr-1",
           class: {
-            "red-text": this.isLikedBy,
+            "orange-text": this.isLikedBy,
             "animated heartBeat fast": this.gotTolike
           },
           on: { click: _vm.clickLike }
@@ -50953,17 +50953,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+ // document.querySelector('.image-picker input')
+//       .addEventListener('change', (e) => {
+//           const input = e.target;
+//           const reader = new FileReader();
+//           reader.onload = (e) => {
+//               input.closest('.image-picker').querySelector('img').src = e.target.result
+//           };
+//           reader.readAsDataURL(input.files[0]);
+//       });
 
-document.querySelector('.image-picker input').addEventListener('change', function (e) {
-  var input = e.target;
-  var reader = new FileReader();
-
-  reader.onload = function (e) {
-    input.closest('.image-picker').querySelector('img').src = e.target.result;
-  };
-
-  reader.readAsDataURL(input.files[0]);
-});
 var app = new vue__WEBPACK_IMPORTED_MODULE_1___default.a({
   el: '#app',
   components: {
