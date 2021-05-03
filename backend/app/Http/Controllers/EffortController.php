@@ -96,7 +96,7 @@ class EffortController extends Controller
 		$goal = Goal::where('id', $request->goal_id)->get()->first();
 
 		// 昨日および今日の軌跡を取得する。
-		[$efforts_yesterday, $efforts_today] = $this->getEffortsYesterday($goal);
+		[$efforts_yesterday, $efforts_today] = $this->getEffortsYesterdayAndToday($goal);
 
 		// 本日の軌跡がなければ、積み上げ日数を+1
 		if ($efforts_today->isEmpty()) {
