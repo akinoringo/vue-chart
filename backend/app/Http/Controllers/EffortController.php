@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\EffortRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class EffortController extends Controller
 {
@@ -27,7 +28,7 @@ class EffortController extends Controller
 	public function index(Request $request) {
 
 		// 検索語の取得
-		$search = $request->search;		
+		$search = $request->search;
 
 		// 全ての軌跡を検索語でソートして作成順に並び替えて取得
 		$efforts = $this->getEffortsAll($search);
@@ -91,18 +92,46 @@ class EffortController extends Controller
 		* @return  \Illuminate\Http\RedirectResponse
 	*/
 	public function store(EffortRequest $request, Effort $effort ){
+		// 軌跡に紐づく目標を取得
+		$goal = Goal::where('id', $request->goal_id)->get()->first();
+
+		// 昨日および今日の軌跡を取得する。
+		[$efforts_yesterday, $efforts_today] = $this->getEffortsYesterday($goal);
+
+		// 本日の軌跡がなければ、積み上げ日数を+1
+		if ($efforts_today->isEmpty()) {
+			$goal->stacking_days += 1;						
+		}
+		
+		// 昨日の軌跡がなければ、継続日数を1にリセットする
+		if ($efforts_yesterday->isEmpty()) {
+			$goal->continuation_days = 1;
+		}	
+
+		// 昨日の軌跡が存在し、今日の軌跡が空だった場合継続日数を+1
+		if ($efforts_yesterday->isNotEmpty() && $efforts_today->isEmpty()) {
+			$goal->continuation_days += 1;
+		}
+
+		// 最大継続日数を更新する
+		if ($goal->continuation_days_max < $goal->continuation_days) {
+			$goal->continuation_days_max = $goal->continuation_days;
+		}
+
 		//軌跡の保存処理
 		$effort->fill($request->all());
 		$effort->goal_id = $request->goal_id;
 		$effort->user_id = $request->user()->id;
 		$effort->save();
 
-		// 軌跡に紐づく目標を取得
-		$goal = Goal::where('id', $request->goal_id)->get()->first();
-
 		// 目標に紐づく軌跡の継続時間の合計をDBに保存。
-		$efforts = Effort::where('goal_id', $request->goal_id)->get();
-		$goal->efforts_time = $this->sumEffortsTime($efforts);
+		$efforts = Effort::where('goal_id', $request->goal_id)
+			->where(function($efforts) {
+					$efforts->where('status', 0);
+				})->get();
+
+		$goal->efforts_time = $this->sumEffortsTime($efforts);		
+
 		$goal->save();
 
 		// 目標が未達成(ステータス:0)の場合、
@@ -152,7 +181,11 @@ class EffortController extends Controller
 		$goal = Goal::where('id', $effort->goal_id)->get()->first();
 
 		// 目標に紐づく軌跡の継続時間の合計をDBに保存
-		$efforts = Effort::where('goal_id', $effort->goal_id)->get();
+		$efforts = Effort::where('goal_id', $effort->goal_id)
+			->where(function($efforts) {
+					$efforts->where('status', 0);
+				})->get();
+
 		$goal->efforts_time = $this->sumEffortsTime($efforts);
 		$goal->save();		
 
@@ -194,11 +227,16 @@ class EffortController extends Controller
 		// 軌跡に紐づく目標が未達成の場合は、軌跡を削除可能。
 		if ($goal->status === 0) {
 
-			// $effortの消去
-			$effort->delete();
+			// $effortのステータスを削除(1)に変更する。
+			$effort->status = 1;
+			$effort->save();
 
 			// 消去した$effortに紐づいていた$goalに紐づく軌跡合計時間($efforts_time)を再計算
-			$efforts = Effort::where('goal_id', $goal->id)->get();
+			$efforts = Effort::where('goal_id', $goal->id)
+				->where(function($efforts) {
+					$efforts->where('status', 0);
+				})->get();
+
 			$goal->efforts_time = $this->sumEffortsTime($efforts);
 			$goal->save();
 		
@@ -262,6 +300,7 @@ class EffortController extends Controller
 	*/
 	private function getEffortsAll($search) {
 		$efforts = Effort::orderBy('created_at', 'DESC')
+							->where('status', 0)
 							->where(function($query) use ($search) {
 								$query->orwhere('title', 'like', "%{$search}%")
 											->orwhere('content', 'like', "%{$search}%");
@@ -277,6 +316,7 @@ class EffortController extends Controller
 	*/
 	private function getEffortsFollow($search) {
 		$efforts_follow = Effort::query()
+			->where('status', 0)
 			->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
 			->orderBy('created_at', 'DESC')
 			->where(function($query) use ($search) {
@@ -345,6 +385,31 @@ class EffortController extends Controller
 		}
 		return $total_efforts_time;
 	}	
+
+	/** 
+		* 軌跡の合計時間を計算する
+		* @param Carbon $yesterday
+		* @param Carbon $today
+		* @param Effort $effort	
+		* @return  array
+	*/
+	private function getEffortsYesterdayAndToday($goal){
+
+		$yesterday = Carbon::yesterday()->format('Y-m-d');
+		$today = Carbon::today()->format('Y-m-d');
+
+		$efforts_yesterday = Effort::where('goal_id', $goal->id)
+			->where(function($goals) use ($yesterday){
+				$goals->whereDate('created_at', $yesterday);
+			})->get();
+
+		$efforts_today = Effort::where('goal_id', $goal->id)
+			->where(function($goals) use ($today){
+				$goals->whereDate('created_at', $today);
+			})->get();		
+
+		return array($efforts_yesterday, $efforts_today);
+	}
 
 
 }

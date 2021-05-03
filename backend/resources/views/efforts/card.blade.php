@@ -61,10 +61,11 @@
   </div>
   <div class="card-body pt-0">
     <div class="card-text mb-3">
+      <span class="border px-1">目標</span>
       <a class="text-dark" href="{{ route('goals.show', ['goal' => $effort->goal]) }}">
-        <span class="border px-1">目標</span> {{ $effort->goal->title }}
+        {{ $effort->goal->title }}
       </a>
-    </div>    
+    </div>        
     <h3 class="h4 card-title">
       <a class="text-dark" href="{{ route('efforts.show', ['effort' => $effort]) }}">
         {{ $effort->title }}
@@ -72,13 +73,16 @@
     </h3>
     
     <div class="card-text mb-3">
-      <div>内容：</div>
       {{ $effort->content }}
     </div>
-    <div class="card-text mt-2">
-      <span class="mr-1">継続時間：</span>
+    <div class="card-text mb-1">
+      <span class="border px-1 text-dark">継続時間</span>
       {{ $effort->effort_time }}時間
-    </div>    
+      <span class="border mx-1 px-1 text-dark">連続積み上げ日数</span>
+      {{ $effort->goal->continuation_days }}日           
+      <span class="border mx-1 px-1 text-dark">合計積み上げ日数</span>
+      {{ $effort->goal->stacking_days }}日
+    </div>        
   </div>
   <div class="card-body pt-0">
     <div class="card-text">
