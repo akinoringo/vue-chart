@@ -143,7 +143,7 @@ class EffortController extends Controller
 							->route('mypage.show', ['id' => Auth::user()->id]);			
 
 		} else {
-			// 目標が未達成(ステータス:0)の場合、軌跡の更新不可
+			// 目標が達成済み(ステータス1)の場合、軌跡の更新不可
 			return redirect()
 							->route('mypage.show',['id' => Auth::user()->id])
 							->with([
