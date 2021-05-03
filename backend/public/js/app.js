@@ -38665,9 +38665,9 @@ var render = function() {
       { staticClass: "btn m-0 p-1 shadow-none", attrs: { type: "button" } },
       [
         _c("i", {
-          staticClass: "fas fa-laugh mr-1",
+          staticClass: "fas fa-heart mr-1",
           class: {
-            "orange-text": this.isLikedBy,
+            "red-text": this.isLikedBy,
             "animated heartBeat fast": this.gotTolike
           },
           on: { click: _vm.clickLike }

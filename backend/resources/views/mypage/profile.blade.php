@@ -1,4 +1,4 @@
-<div class="card my-3 py-4 border-light border-top-0 border-right-0 border-left-0 rounded-0" >
+<div class="card my-3 pt-4 pb-2 border-light border-top-0 border-right-0 border-left-0 rounded-0" >
   <div class="row no-gutters">
     <div class="col-md-4 text-center">
       <a href="{{ route('mypage.show', ['id' => $user->id]) }}" class="text-dark">      
@@ -35,7 +35,8 @@
           </a>
           <a href="{{route('followers', ['name' => $user->name])}}" class="text-muted mt-2">
             {{ $user->count_followers}} フォロワー
-          </a>
+          </a>          
+
         @if( Auth::id() !== $user->id )
           <follow-button
             class="ml-4 mr-auto"
@@ -44,8 +45,13 @@
             endpoint="{{route('follow', ['name' => $user->name])}}"
           >
           </follow-button>
-        @endif           
+        @endif        
         </div>
+        <div class="mt-2">
+          <img src="/images/efforttime.png" class="rounded-circle" style="object-fit: cover; width: 75px; height: 75px;">
+         <img src="/images/effortday.png" class="rounded-circle" style="object-fit: cover; width: 75px; height: 75px;">
+         <img src="/images/goalclear.png" class="rounded-circle" style="object-fit: cover; width: 75px; height: 75px;">                                  
+        </div>         
 
       </div>     
     </div>
