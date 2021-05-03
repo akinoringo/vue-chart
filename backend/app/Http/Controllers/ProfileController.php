@@ -194,6 +194,7 @@ class ProfileController extends Controller
 		foreach ($goals as $goal) {
 			$efforts[] = Effort::orderBy('created_at', 'DESC')
 				->where('goal_id', $goal->id)
+				->where('status', 0)
 				->where(function($query) use ($search) {
 									$query->orwhere('title', 'like', "%{$search}%")
 												->orwhere('content', 'like', "%{$search}%");
