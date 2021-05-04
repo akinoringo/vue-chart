@@ -105,7 +105,7 @@ class EffortController extends Controller
 		
 		// 昨日の軌跡がなければ、継続日数を1にリセットする
 		if ($efforts_yesterday->isEmpty()) {
-			$goal->continuation_days = 1;
+			$goal->continuation_days = 1;		
 		}	
 
 		// 昨日の軌跡が存在し、今日の軌跡が空だった場合継続日数を+1
@@ -137,14 +137,18 @@ class EffortController extends Controller
 		$user = User::where('id', Auth::user()->id)->first();
 
 		// 積み上げ時間が10時間以上でバッジを獲得
-		if ($goal->efforts_time > 9) {
+		if ($goal->efforts_time > 9 && $user->efforts_time_badge == 0) {
 			$user->efforts_time_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。忍耐力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
 
 		}
 
 		// 積み上げ日数が10日以上でバッジを獲得
-		if ($goal->stacking_days > 0) {
+		if ($goal->stacking_days > 0 && $user->stacking_days_badge == 0) {
 			$user->stacking_days_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。継続力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
 		}		
 
 		// 目標時間>合計継続時間であれば目標ステータスを1に更新
@@ -152,8 +156,10 @@ class EffortController extends Controller
 
 
 		// 目標をクリアしたら、バッジを獲得
-		if ($goal->status == 1) {
+		if ($goal->status == 1 && $user->goal_clear_badge == 0) {
 			$user->goal_clear_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。達成力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
 
 		}
 
