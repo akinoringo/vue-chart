@@ -134,6 +134,14 @@ class EffortController extends Controller
 
 		$goal->save();
 
+		$user = User::where('id', Auth::user()->id);
+		
+
+		if ($goal->stacking_days > 99) {
+			
+
+		}
+
 		// 目標が未達成(ステータス:0)の場合、
 		// 目標時間>合計継続時間であれば目標ステータスを1に更新
 		if($goal->status === 0) {
