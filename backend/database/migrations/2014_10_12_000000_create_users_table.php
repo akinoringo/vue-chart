@@ -21,6 +21,10 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('image')->nullable();
             $table->string('introduction')->nullable();
+            $table->tinyInteger('efforts_time_badge')->default(0)->comment('0=未取得, 1=取得済み');
+            $table->tinyInteger('stacking_days_badge')->default(0)->comment('0=未取得, 1=取得済み');
+            $table->tinyInteger('continuation_days_badge')->default(0)->comment('0=未取得, 1=取得済み');
+            $table->tinyInteger('goal_clear_badge')->default(0)->comment('0=未取得, 1=取得済み');             
             $table->rememberToken();
             $table->timestamps();
         });

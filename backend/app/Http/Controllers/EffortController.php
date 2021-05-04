@@ -134,31 +134,33 @@ class EffortController extends Controller
 
 		$goal->save();
 
-		$user = User::where('id', Auth::user()->id);
-		
+		$user = User::where('id', Auth::user()->id)->first();
 
-		if ($goal->stacking_days > 99) {
-			
+		// 積み上げ時間が10時間以上でバッジを獲得
+		if ($goal->efforts_time > 9) {
+			$user->efforts_time_badge = 1;
 
 		}
 
-		// 目標が未達成(ステータス:0)の場合、
+		// 積み上げ日数が10日以上でバッジを獲得
+		if ($goal->stacking_days > 0) {
+			$user->stacking_days_badge = 1;
+		}		
+
 		// 目標時間>合計継続時間であれば目標ステータスを1に更新
-		if($goal->status === 0) {
-			
-			$this->updateGoalStatus($goal, $efforts);
-			return redirect()
-							->route('mypage.show', ['id' => Auth::user()->id]);			
+		$this->updateGoalStatus($goal, $efforts);
 
-		} else {
-			// 目標が達成済み(ステータス1)の場合、軌跡の更新不可
-			return redirect()
-							->route('mypage.show',['id' => Auth::user()->id])
-							->with([
-								'flash_message' => 'クリア済みの目標です。',
-								'color', 'danger'
-							]);
+
+		// 目標をクリアしたら、バッジを獲得
+		if ($goal->status == 1) {
+			$user->goal_clear_badge = 1;
+
 		}
+
+		$user->save();
+
+		return redirect()
+						->route('mypage.show', ['id' => Auth::user()->id]);			
 
 	}
 

@@ -51,12 +51,7 @@ class User extends Authenticatable
     public function efforts()
     {
         return $this->hasMany('App\Effort');
-    } 
-
-    public function badges()
-    {
-        return $this->hasMany('App\Badge');
-    }     
+    }  
 
 
     public function followers(): BelongsToMany

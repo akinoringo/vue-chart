@@ -48,9 +48,15 @@
         @endif        
         </div>
         <div class="mt-2">
+        @if ( $user->efforts_time_badge == 1)
           <img src="/images/efforttime.png" class="rounded-circle" style="object-fit: cover; width: 75px; height: 75px;">
+        @endif
+        @if ( $user->stacking_days_badge == 1)
          <img src="/images/effortday.png" class="rounded-circle" style="object-fit: cover; width: 75px; height: 75px;">
-         <img src="/images/goalclear.png" class="rounded-circle" style="object-fit: cover; width: 75px; height: 75px;">                                  
+        @endif
+        @if ( $user->goal_clear_badge == 1)
+         <img src="/images/goalclear.png" class="rounded-circle" style="object-fit: cover; width: 75px; height: 75px;">   
+        @endif                               
         </div>         
 
       </div>     
