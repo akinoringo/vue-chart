@@ -12,6 +12,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\App;
 
 class ProfileController extends Controller
 {
@@ -214,10 +215,21 @@ class ProfileController extends Controller
 		$tempPath = $this->makeTempPath();
 		Image::make($file)->fit(200, 200)->save($tempPath);
 
-		$filePath = Storage::disk('public')
-			->putFile('images', new File($tempPath)); //publicディレクトリの	imagesフォルダに保存。
+		if (App::environment('local')) {
+			$path = Storage::disk('public')
+				->putFile('images', new File($tempPath)); //publicディレクトリの	imagesフォルダに保存。	
+			$path = '/storage/'.$path; 	
 
-		return basename($filePath);
+			return $path;	
+		}
+
+		if (App::environment('production')) {
+			$disk = Storage::disk('s3');
+			$filePath = $disk->putFile('images/profile', new File($tempPath), 'public'); //s3のimages/profileディレクトリの	imagesフォルダに保存。	
+			$path = $disk->url($filePath);		
+		}
+
+		return $path;
 	}
 
 	/**

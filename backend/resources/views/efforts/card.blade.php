@@ -2,7 +2,7 @@
   <div class="card-body d-flex flex-row">
     <a href="{{ route('mypage.show', ['id' => $effort->user->id]) }}" class="text-dark">     
       @if(!empty($effort->user->image))
-      <img src="/storage/images/{{$effort->user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
+      <img src="{{$effort->user->image}}" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
       @else
       <img src="/images/prof.png" class="rounded-circle mr-2" style="object-fit: cover; width: 50px; height: 50px;">
       @endif     
