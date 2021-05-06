@@ -12,13 +12,6 @@
       <div class="container text-center mb-4">
         <img src="images/stepup.svg" style=" width: 60%;">
       </div> 
-{{--       <hr class="my-4">
-      <p>使い方はいたってシンプル</p>
-      <div class="mb-4">
-        <div>1. 目標と目標達成に向けて継続したい時間を登録する</div>
-        <div>2. 日々の軌跡と継続時間を記録する</div>
-        <div>3. 目標時間に到達したらクリア。次の目標を登録しよう！</div>
-      </div>--}}
       <p>
         まずはユーザー登録して目標を登録してみよう！
       </p>
