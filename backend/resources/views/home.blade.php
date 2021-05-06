@@ -23,6 +23,9 @@
         まずはユーザー登録して目標を登録してみよう！
       </p>
       <a class="btn btn-primary btn-lg" href="{{route('register')}}" role="button">ユーザー登録</a>
+      <div class="my-0">
+        <a href="{{ route('login') }}" class="card-text text-muted">ログインはこちら</a>
+      </div>      
     </div>
     <h3 class="text-center my-4 pb-2 border-bottom">Kisekiの特徴</h3>
     <div class="row">
