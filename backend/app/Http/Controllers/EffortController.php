@@ -179,7 +179,25 @@ class EffortController extends Controller
 		// 自身の未達成の目標を取得
 		$goals = $this->myGoalsGet();
 
-		return view('efforts.edit', compact('effort', 'goals'));
+		// 未達成の目標に紐づく軌跡なら編集可能
+		$goal = Goal::where('id', $effort->goal_id)->get()->first();
+
+		if ($goal->status == 0) {
+			
+			return view('efforts.edit', compact('effort', 'goals'));	
+		
+		}	
+
+		// 達成済みの目標に紐づく軌跡は編集不可能
+		if ($goal->status == 1) {
+			return redirect()
+							->route('mypage.show', ['id' => Auth::user()->id])
+							->with([
+								'flash_message' => 'クリア済みの目標なので、軌跡は編集できません。',
+								'color' => 'danger'
+							]);			
+		}
+
 	}	
 
 	/**
@@ -203,29 +221,46 @@ class EffortController extends Controller
 				})->get();
 
 		$goal->efforts_time = $this->sumEffortsTime($efforts);
-		$goal->save();		
+		$goal->save();
 
-		//目標のステータスが0(目標未達成)の場合、goal_time>total(effort_time)であれば目標ステータスを1に更新する。
-		if($goal->status === 0) {
-			
-			$this->updateGoalStatus($goal, $efforts);
+		$user = User::where('id', Auth::user()->id)->first();		
 
-			return redirect()
-							->route('mypage.show', ['id' => Auth::user()->id])
-							->with([
-								'flash_message' => '軌跡を編集しました。',
-								'color' => 'success'
-							]);			
+		// 積み上げ時間が99時間以上でバッジを獲得
+		if ($goal->efforts_time > 99 && $user->efforts_time_badge == 0) {
+			$user->efforts_time_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。忍耐力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
 
-		} else {
-
-			return redirect()
-							->route('mypage.show', ['id' => Auth::user()->id])
-							->with([
-								'flash_message' => 'クリア済みの目標なので、軌跡は編集できません。',
-								'color' => 'danger'
-							]);
 		}
+
+		// 積み上げ日数が10日以上でバッジを獲得
+		if ($goal->stacking_days > 9 && $user->stacking_days_badge == 0) {
+			$user->stacking_days_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。継続力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
+		}					
+
+		//goal_time>total(effort_time)であれば目標ステータスを1に更新する。
+			
+		$this->updateGoalStatus($goal, $efforts);
+
+		// 目標をクリアしたら、バッジを獲得
+		if ($goal->status == 1 && $user->goal_clear_badge == 0) {
+			$user->goal_clear_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。達成力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
+
+		}		
+
+		$user->save();		
+
+		return redirect()
+						->route('mypage.show', ['id' => Auth::user()->id])
+						->with([
+							'flash_message' => '軌跡を編集しました。',
+							'color' => 'success'
+						]);			
+
 
 	}	
 
