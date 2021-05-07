@@ -78,4 +78,4 @@ http://localhost
 <img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/115630536-242b0b80-a33f-11eb-8e38-18333a4a977f.png">
 
 ## インフラ構成図
-<img width="700" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/117399222-019e1280-af3b-11eb-975b-fa5b89049446.png">
+<img width="700" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/117399794-4bd3c380-af3c-11eb-831b-efc855eb575a.png">
