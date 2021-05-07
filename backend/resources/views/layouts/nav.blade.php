@@ -1,7 +1,7 @@
 @auth
 <nav class="navbar navbar-expand navbar-dark bg-dark">
 
-  <a class="navbar-brand" href="/"><i class="fas fa-shoe-prints fa-rotate-270 mr-2"></i>Kiseki</a>
+  <a class="navbar-brand font-weight-bold" href="/"><i class="fas fa-shoe-prints fa-rotate-270 mr-2"></i>Kiseki</a>
 
   <ul class="navbar-nav ml-auto">
 
@@ -45,7 +45,7 @@
 <nav class="navbar navbar-dark bg-dark lighten-4 mb-4">
 
   <!-- Navbar brand -->
-  <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Kiseki</a>s
+  <a class="navbar-brand font-weight-bold" href="/"><i class="fas fa-shoe-prints fa-rotate-270 mr-2"></i> Kiseki</a>s
 
   <!-- Collapse button -->
   <button class="navbar-toggler toggler-example navbar-dark darken-3" type="button" data-toggle="collapse"
