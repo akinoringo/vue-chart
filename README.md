@@ -18,6 +18,7 @@ http://app-kiseki.com
 - AWS
 	- VPC
  	- EC2
+ 	- S3
 	- Route53
 	- ACM
 	- CloudWatch
@@ -61,14 +62,15 @@ http://localhost
 
 ## 機能一覧
 - ユーザー登録
- - プロフィール画像登録機能
- - 画像トリミング保存機能
+	- プロフィール画像登録機能
+	- 画像トリミング保存機能
 - 目標投稿機能(CRUD)
 - 軌跡投稿機能(CRUD)
 - ページネーション機能
 - 部分検索機能
 - フォロー機能(非同期通信)
 - いいね機能(非同期通信)
+- バッジの獲得機能(継続日数や時間に応じてバッジを獲得できる)
 
 
 ## アプリ使用画面
@@ -76,4 +78,4 @@ http://localhost
 <img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/115630536-242b0b80-a33f-11eb-8e38-18333a4a977f.png">
 
 ## インフラ構成図
-<img width="700" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/115630032-52f4b200-a33e-11eb-9d3b-cad131c53b0c.png">
+<img width="700" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/117399222-019e1280-af3b-11eb-975b-fa5b89049446.png">
