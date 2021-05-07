@@ -1,7 +1,7 @@
 @auth
 <nav class="navbar navbar-expand navbar-dark bg-dark">
 
-  <a class="navbar-brand" href="/"><i class="far fa-bookmark"></i> Kiseki</a>
+  <a class="navbar-brand" href="/"><i class="fas fa-shoe-prints fa-rotate-270 mr-2"></i>Kiseki</a>
 
   <ul class="navbar-nav ml-auto">
 
