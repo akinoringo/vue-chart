@@ -11,9 +11,8 @@ class EffortControllerTest extends TestCase
     use RefreshDatabase;
 
     public function testIndex(){
-        $response = $this->get(route('home'));
-        $response->assertStatus(200)
-            ->assertViewIs('home');
+        $response = $this->get('/');
+        $response->assertStatus(200);
 
     }
 }
