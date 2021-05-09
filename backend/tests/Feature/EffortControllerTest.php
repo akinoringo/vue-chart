@@ -8,6 +8,7 @@ use Tests\TestCase;
 
 class EffortControllerTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function testIndex(){
         $this->assertTrue(true);
