@@ -54,7 +54,7 @@ jobs:
           name: get ready for mysql
           command: |
             sudo apt-get update
-            sudo apt-get install mysql-client
+            sudo apt-get install default-mysql-client
             dockerize -wait tcp://localhost:3306 -timeout 1m
       - run:
           working_directory: backend
