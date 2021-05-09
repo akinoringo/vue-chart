@@ -71,7 +71,7 @@ jobs:
       - run:
           name: deploy
           command: |
-            ssh -o StrictHostKeyChecking=no -t webapp@{HOST_NAME} "cd app-kiseki/backend && \
+            ssh -o StrictHostKeyChecking=no -t webapp@${HOST_NAME} "cd app-kiseki/backend && \
               git pull origin main && \
               composer install -n --no-dev --prefer-dist && \
               npm ci && \
