@@ -107,7 +107,19 @@ http://localhost
 
 ## アプリ使用画面
 
-<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/115630536-242b0b80-a33f-11eb-8e38-18333a4a977f.png">
+### トップページ
+<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117590686-a6069b80-b16b-11eb-9add-c18b6fc58ab9.png">
+
+<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117590745-c6365a80-b16b-11eb-97f2-c9ad731911ea.png">
+
+### みんなの軌跡一覧
+<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117590766-de0dde80-b16b-11eb-970d-6c74e05ca80e.png">
+
+### マイページ
+<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117590790-04337e80-b16c-11eb-8631-64eed630b504.png">
+
+### 軌跡入力画面
+<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117590808-1ad9d580-b16c-11eb-920b-9e7288e231a0.png">
 
 ## インフラ構成図
-<img width="700" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/117399794-4bd3c380-af3c-11eb-831b-efc855eb575a.png">
+<img width="700" alt="Cloud Image" src="https://user-images.githubusercontent.com/73481750/117590129-ee708a00-b168-11eb-80be-ef54b3f64890.png">
