@@ -55,6 +55,7 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install default-mysql-client
+            sudo docker-php-ext-install zip pdo_mysql
             dockerize -wait tcp://localhost:3306 -timeout 1m
       - run:
           working_directory: backend
