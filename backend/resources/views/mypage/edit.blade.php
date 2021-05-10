@@ -41,7 +41,7 @@
                       <input type="file" name="image" class="d-none" accept="image/png,image/jpeg, image/jpg, image/gif" id="image">
                       <label for="image" class="d-inline-block">
                         @if(!empty($user->image))
-                        <img src="/storage/images/{{$user->image}}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
+                        <img src="{{$user->image}}" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
                         @else
                         <img src="/images/prof.png" class="rounded-circle" style="object-fit: cover; width: 200px; height: 200px;">
                         @endif
