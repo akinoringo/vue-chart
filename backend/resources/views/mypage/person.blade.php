@@ -3,7 +3,7 @@
     <div class="d-flex flex-row">
       <a href="{{ route('mypage.show', ['id' => $person->id]) }}" class="text-dark">
 	      @if(!empty($person->image))
-	      <img src="/storage/images/{{$person->image}}" class="rounded-circle" style="object-fit: cover; width: 50px; height: 50px;">
+	      <img src="{{$person->image}}" class="rounded-circle" style="object-fit: cover; width: 50px; height: 50px;">
 	      @else
 	      <img src="/images/prof.png" class="rounded-circle" style="object-fit: cover; width: 50px; height: 50px;">
 	      @endif 
