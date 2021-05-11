@@ -6,6 +6,7 @@ use App\Effort;
 use App\Goal;
 use App\User;
 use App\Http\Requests\EffortRequest;
+use App\Services\BadgeService;
 use App\Services\DayService;
 use App\Services\EffortService;
 use App\Services\GoalService;
@@ -17,17 +18,21 @@ use Illuminate\Support\Facades\DB;
 
 class EffortController extends Controller
 {
+	protected $badge_service;
+	protected $day_service;
 	protected $effort_service;
 	protected $goal_service;
 	protected $time_service;
   
-	public function __construct(DayService $day_service, EffortService $effort_service, GoalService $goal_service, TimeService $time_service)
+	public function __construct(BadgeService $badge_service, DayService $day_service, EffortService $effort_service, GoalService $goal_service, TimeService $time_service)
 	{
 		// Serviceクラスからインスタンスを作成
+		$this->BadgeService = $badge_service;
 		$this->DayService = $day_service;
 		$this->EffortService = $effort_service;
 		$this->GoalService = $goal_service;
-		$this->TimeService = $time_service;		
+		$this->TimeService = $time_service;	
+
 		// EffortPolicyでCRUD操作を制限
 		$this->authorizeResource(Effort::class, 'effort');
 	}
@@ -133,11 +138,11 @@ class EffortController extends Controller
 		$user = User::where('id', Auth::user()->id)->first();
 
 		// 積み上げ時間が99時間以上でバッジを獲得
-		$this->getEffortsTimeBadge($user, $goal);
+		$this->BadgeService->getEffortsTimeBadge($user, $goal);
 		// 積み上げ日数が10日以上でバッジを獲得
-		$this->getStackingDaysBadge($user, $goal);	
+		$this->BadgeService->getStackingDaysBadge($user, $goal);	
 		// 目標をクリアしたら、バッジを獲得
-		$this->getGoalClearBadge($user, $goal);
+		$this->BadgeService->getGoalClearBadge($user, $goal);
 
 		$user->save();
 
@@ -200,11 +205,11 @@ class EffortController extends Controller
 		$user = User::where('id', Auth::user()->id)->first();
 
 		// 積み上げ時間が99時間以上でバッジを獲得
-		$this->getEffortsTimeBadge($user, $goal);
+		$this->BadgeService->getEffortsTimeBadge($user, $goal);
 		// 積み上げ日数が10日以上でバッジを獲得
-		$this->getStackingDaysBadge($user, $goal);	
+		$this->BadgeService->getStackingDaysBadge($user, $goal);	
 		// 目標をクリアしたら、バッジを獲得
-		$this->getGoalClearBadge($user, $goal);
+		$this->BadgeService->getGoalClearBadge($user, $goal);
 		$user->save();		
 
 		return redirect()
@@ -288,33 +293,5 @@ class EffortController extends Controller
 			'countLikes' => $effort->count_likes,
 		];
 	}	
-
-	// 積み上げ時間が99時間以上でバッジを獲得
-	private function getEffortsTimeBadge($user, $goal){
-		if ($goal->efforts_time > 99 && $user->efforts_time_badge == 0) {
-			$user->efforts_time_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。忍耐力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-		}		
-	}
-
-	// 積み上げ日数が10日以上でバッジを獲得
-	private function getStackingDaysBadge($user, $goal){
-		if ($goal->stacking_days > 9 && $user->stacking_days_badge == 0) {
-			$user->stacking_days_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。継続力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-		}			
-	}
-
-	// 目標をクリアしたら、バッジを獲得
-	private function getGoalClearBadge($user, $goal){
-		if ($goal->status == 1 && $user->goal_clear_badge == 0) {
-			$user->goal_clear_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。達成力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-
-		}		
-	}
 
 }
