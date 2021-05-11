@@ -118,6 +118,9 @@ http://localhost
 ### マイページ
 <img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117590790-04337e80-b16c-11eb-8631-64eed630b504.png">
 
+### 獲得バッジの表示
+<img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117773175-f87eaf80-b272-11eb-8a5f-21e8d45ee4fd.png">
+
 ### 軌跡入力画面
 <img width="700" alt="Screen Shot of kiseki's view of mypage" src="https://user-images.githubusercontent.com/73481750/117590808-1ad9d580-b16c-11eb-920b-9e7288e231a0.png">
 
