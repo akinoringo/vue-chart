@@ -24,6 +24,23 @@ class EffortService{
 		return $efforts;
 	}
 
+
+	/** 
+		* 目標に紐づく軌跡を取得する
+		* @param Goal $goal
+		* @param Effort $effort
+		* @return  Builder
+	*/
+	public function getEffortsOfGoal($goal){
+		$efforts = Effort::where('goal_id', $goal->id)
+			->where(function($efforts) {
+					$efforts->where('status', 0);
+				})->get();
+
+		return $efforts;
+	}
+
+
 	/** 
 		* フォロー中の人の軌跡を検索語でソートして取得する
 		* @param Effort $effort

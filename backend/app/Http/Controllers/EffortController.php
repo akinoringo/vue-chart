@@ -6,6 +6,7 @@ use App\Effort;
 use App\Goal;
 use App\User;
 use App\Http\Requests\EffortRequest;
+use App\Services\DayService;
 use App\Services\EffortService;
 use App\Services\GoalService;
 use App\Services\TimeService;
@@ -20,9 +21,10 @@ class EffortController extends Controller
 	protected $goal_service;
 	protected $time_service;
   
-	public function __construct(EffortService $effort_service, GoalService $goal_service, TimeService $time_service)
+	public function __construct(DayService $day_service, EffortService $effort_service, GoalService $goal_service, TimeService $time_service)
 	{
 		// Serviceクラスからインスタンスを作成
+		$this->DayService = $day_service;
 		$this->EffortService = $effort_service;
 		$this->GoalService = $goal_service;
 		$this->TimeService = $time_service;		
@@ -109,9 +111,9 @@ class EffortController extends Controller
 		[$efforts_yesterday, $efforts_today] = $this->EffortService->getEffortsYesterdayAndToday($goal);
 
 		// 積み上げ日数、継続日数を更新
-		$this->addStackingdays($goal, $efforts_today);
-		$this->updateContinuationdays($goal, $efforts_yesterday, $efforts_today);
-		$this->updateContinuationdaysmax($goal);
+		$this->DayService->addStackingdays($goal, $efforts_today);
+		$this->DayService->updateContinuationdays($goal, $efforts_yesterday, $efforts_today);
+		$this->DayService->updateContinuationdaysmax($goal);
 
 		//軌跡の保存処理
 		$effort->fill($request->all());
@@ -120,7 +122,7 @@ class EffortController extends Controller
 		$effort->save();
 
 		// 奇跡に紐づく目標の継続時間合計をDBに保存。
-		$efforts = $this->getEffortsOfGoal($goal);
+		$efforts = $this->EffortService->getEffortsOfGoal($goal);
 		$goal->efforts_time = $this->TimeService->sumEffortsTime($efforts);	
 
 		// 目標時間>合計継続時間であれば目標ステータスを1に更新
@@ -132,10 +134,8 @@ class EffortController extends Controller
 
 		// 積み上げ時間が99時間以上でバッジを獲得
 		$this->getEffortsTimeBadge($user, $goal);
-
 		// 積み上げ日数が10日以上でバッジを獲得
 		$this->getStackingDaysBadge($user, $goal);	
-
 		// 目標をクリアしたら、バッジを獲得
 		$this->getGoalClearBadge($user, $goal);
 
@@ -143,7 +143,6 @@ class EffortController extends Controller
 
 		return redirect()
 						->route('mypage.show', ['id' => Auth::user()->id]);			
-
 	}
 
 	/**
@@ -173,7 +172,6 @@ class EffortController extends Controller
 								'color' => 'danger'
 							]);			
 		}
-
 	}	
 
 	/**
@@ -189,7 +187,7 @@ class EffortController extends Controller
 
 		// 軌跡に紐づく目標と、目標に紐づく軌跡を全て抽出
 		$goal = Goal::where('id', $effort->goal_id)->get()->first();
-		$efforts = $this->getEffortsOfGoal($goal);
+		$efforts = $this->EffortService->getEffortsOfGoal($goal);
 
 		// 目標に紐づく軌跡の継続時間の合計をDBに保存		
 		$goal->efforts_time = $this->TimeService->sumEffortsTime($efforts);
@@ -215,7 +213,6 @@ class EffortController extends Controller
 							'flash_message' => '軌跡を編集しました。',
 							'color' => 'success'
 						]);			
-
 	}	
 
 	/**
@@ -237,7 +234,7 @@ class EffortController extends Controller
 			$effort->save();
 
 			// 消去した$effortに紐づいていた$goalに紐づく軌跡合計時間($efforts_time)を再計算
-			$efforts = $this->getEffortsOfGoal($goal);
+			$efforts = $this->EffortService->getEffortsOfGoal($goal);
 			$goal->efforts_time = $this->TimeService->sumEffortsTime($efforts);
 			$goal->save();
 		
@@ -256,8 +253,6 @@ class EffortController extends Controller
 								'color' => 'danger'
 							]);			
 		}
-
-
 	}
 
 
@@ -293,43 +288,6 @@ class EffortController extends Controller
 			'countLikes' => $effort->count_likes,
 		];
 	}	
-
-	private function addStackingdays($goal, $efforts_today) {
-		// 本日の軌跡がなければ、積み上げ日数を+1
-		if ($efforts_today->isEmpty()) {
-			$goal->stacking_days += 1;						
-		}
-
-	}
-
-	private function updateContinuationdays($goal, $efforts_yesterday, $efforts_today){
-		// 昨日の軌跡がなければ、継続日数を1にリセットする
-		if ($efforts_yesterday->isEmpty()) {
-			$goal->continuation_days = 1;		
-		}			
-
-		// 昨日の軌跡が存在し、今日の軌跡が空だった場合継続日数を+1
-		if ($efforts_yesterday->isNotEmpty() && $efforts_today->isEmpty()) {
-			$goal->continuation_days += 1;
-		}		
-
-	}
-
-	private function updateContinuationdaysmax($goal){
-		// 最大継続日数を更新する
-		if ($goal->continuation_days_max < $goal->continuation_days) {
-			$goal->continuation_days_max = $goal->continuation_days;
-		}		
-	}
-
-	private function getEffortsOfGoal($goal){
-		$efforts = Effort::where('goal_id', $goal->id)
-			->where(function($efforts) {
-					$efforts->where('status', 0);
-				})->get();
-
-		return $efforts;
-	}
 
 	// 積み上げ時間が99時間以上でバッジを獲得
 	private function getEffortsTimeBadge($user, $goal){
