@@ -16,4 +16,10 @@ class EffortControllerTest extends TestCase
     	$responce->assertStatus(200)
         ->assertViewIs('home');
     }
+
+    public function testGuestCreate() {
+    	$responce = $this->get(route('efforts.create'));
+
+    	$responce->assertRedirect(route('login'));
+    }
 }
