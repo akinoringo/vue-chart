@@ -25,7 +25,8 @@ Route::resource('/goals', 'GoalController')->except(['index, show'])->middleware
 Route::resource('/goals', 'GoalController')->only(['show']);
 
 # 軌跡関連ルーティング
-Route::resource('/efforts', 'EffortController')->except(['index']);
+Route::resource('/efforts', 'EffortController')->except(['index, show'])->middleware('auth');
+Route::resource('/efforts', 'EffortController')->only(['show']);
 Route::prefix('efforts')->name('efforts.')->group(function(){
 	Route::put('/{effort}/like', 'EffortController@like')->name('like')->middleware('auth');
 	Route::delete('/{effort}/like', 'EffortController@unlike')->name('unlike')->middleware('auth');
