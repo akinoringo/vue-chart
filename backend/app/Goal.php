@@ -13,6 +13,7 @@ class Goal extends Model
 		'title',
 		'content',
 		'goal_time',
+		'user_id',
 	];
 
 
