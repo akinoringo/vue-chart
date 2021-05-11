@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -21,5 +22,14 @@ class EffortControllerTest extends TestCase
     	$responce = $this->get(route('efforts.create'));
 
     	$responce->assertRedirect(route('login'));
+    }
+
+    public function testAuthCreate() {
+    	$user = factory(User::class)->create();
+
+    	$responce = $this->actingAs($user)
+    		->get(route('efforts.create'));
+
+    	$responce->assertRedirect(route('mypage.show', ['id' => $user->id]));
     }
 }
