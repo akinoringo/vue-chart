@@ -8,6 +8,7 @@ use App\User;
 use App\Http\Requests\EffortRequest;
 use App\Services\EffortService;
 use App\Services\GoalService;
+use App\Services\TimeService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,13 +18,14 @@ class EffortController extends Controller
 {
 	protected $effort_service;
 	protected $goal_service;
-
+	protected $time_service;
   
-	public function __construct(EffortService $effort_service, GoalService $goal_service)
+	public function __construct(EffortService $effort_service, GoalService $goal_service, TimeService $time_service)
 	{
 		// Serviceクラスからインスタンスを作成
 		$this->EffortService = $effort_service;
 		$this->GoalService = $goal_service;
+		$this->TimeService = $time_service;		
 		// EffortPolicyでCRUD操作を制限
 		$this->authorizeResource(Effort::class, 'effort');
 	}
@@ -104,27 +106,12 @@ class EffortController extends Controller
 		$goal = Goal::where('id', $request->goal_id)->get()->first();
 
 		// 昨日および今日の軌跡を取得する。
-		[$efforts_yesterday, $efforts_today] = $this->getEffortsYesterdayAndToday($goal);
+		[$efforts_yesterday, $efforts_today] = $this->EffortService->getEffortsYesterdayAndToday($goal);
 
-		// 本日の軌跡がなければ、積み上げ日数を+1
-		if ($efforts_today->isEmpty()) {
-			$goal->stacking_days += 1;						
-		}
-		
-		// 昨日の軌跡がなければ、継続日数を1にリセットする
-		if ($efforts_yesterday->isEmpty()) {
-			$goal->continuation_days = 1;		
-		}	
-
-		// 昨日の軌跡が存在し、今日の軌跡が空だった場合継続日数を+1
-		if ($efforts_yesterday->isNotEmpty() && $efforts_today->isEmpty()) {
-			$goal->continuation_days += 1;
-		}
-
-		// 最大継続日数を更新する
-		if ($goal->continuation_days_max < $goal->continuation_days) {
-			$goal->continuation_days_max = $goal->continuation_days;
-		}
+		// 積み上げ日数、継続日数を更新
+		$this->addStackingdays($goal, $efforts_today);
+		$this->updateContinuationdays($goal, $efforts_yesterday, $efforts_today);
+		$this->updateContinuationdaysmax($goal);
 
 		//軌跡の保存処理
 		$effort->fill($request->all());
@@ -132,44 +119,25 @@ class EffortController extends Controller
 		$effort->user_id = $request->user()->id;
 		$effort->save();
 
-		// 目標に紐づく軌跡の継続時間の合計をDBに保存。
-		$efforts = Effort::where('goal_id', $request->goal_id)
-			->where(function($efforts) {
-					$efforts->where('status', 0);
-				})->get();
+		// 奇跡に紐づく目標の継続時間合計をDBに保存。
+		$efforts = $this->getEffortsOfGoal($goal);
+		$goal->efforts_time = $this->TimeService->sumEffortsTime($efforts);	
 
-		$goal->efforts_time = $this->sumEffortsTime($efforts);		
-
+		// 目標時間>合計継続時間であれば目標ステータスを1に更新
+		$this->GoalService->updateGoalStatus($goal, $efforts);			
 		$goal->save();
 
+		// ログインユーザーを取得
 		$user = User::where('id', Auth::user()->id)->first();
 
 		// 積み上げ時間が99時間以上でバッジを獲得
-		if ($goal->efforts_time > 99 && $user->efforts_time_badge == 0) {
-			$user->efforts_time_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。忍耐力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-
-		}
+		$this->getEffortsTimeBadge($user, $goal);
 
 		// 積み上げ日数が10日以上でバッジを獲得
-		if ($goal->stacking_days > 9 && $user->stacking_days_badge == 0) {
-			$user->stacking_days_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。継続力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-		}		
-
-		// 目標時間>合計継続時間であれば目標ステータスを1に更新
-		$this->updateGoalStatus($goal, $efforts);
-
+		$this->getStackingDaysBadge($user, $goal);	
 
 		// 目標をクリアしたら、バッジを獲得
-		if ($goal->status == 1 && $user->goal_clear_badge == 0) {
-			$user->goal_clear_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。達成力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-
-		}
+		$this->getGoalClearBadge($user, $goal);
 
 		$user->save();
 
@@ -185,7 +153,7 @@ class EffortController extends Controller
 	*/
 	public function edit(Effort $effort){
 		// 自身の未達成の目標を取得
-		$goals = $this->myGoalsGet();
+		$goals = $this->GoalService->myGoalsGet();
 
 		// 未達成の目標に紐づく軌跡なら編集可能
 		$goal = Goal::where('id', $effort->goal_id)->get()->first();
@@ -221,45 +189,24 @@ class EffortController extends Controller
 
 		// 軌跡に紐づく目標と、目標に紐づく軌跡を全て抽出
 		$goal = Goal::where('id', $effort->goal_id)->get()->first();
+		$efforts = $this->getEffortsOfGoal($goal);
 
-		// 目標に紐づく軌跡の継続時間の合計をDBに保存
-		$efforts = Effort::where('goal_id', $effort->goal_id)
-			->where(function($efforts) {
-					$efforts->where('status', 0);
-				})->get();
-
-		$goal->efforts_time = $this->sumEffortsTime($efforts);
+		// 目標に紐づく軌跡の継続時間の合計をDBに保存		
+		$goal->efforts_time = $this->TimeService->sumEffortsTime($efforts);
+		//goal_time>total(effort_time)であれば目標ステータスを1に更新する。
+		$this->GoalService->updateGoalStatus($goal, $efforts);		
 		$goal->save();
 
-		$user = User::where('id', Auth::user()->id)->first();		
+
+		// ログインユーザーを取得
+		$user = User::where('id', Auth::user()->id)->first();
 
 		// 積み上げ時間が99時間以上でバッジを獲得
-		if ($goal->efforts_time > 99 && $user->efforts_time_badge == 0) {
-			$user->efforts_time_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。忍耐力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-
-		}
-
+		$this->getEffortsTimeBadge($user, $goal);
 		// 積み上げ日数が10日以上でバッジを獲得
-		if ($goal->stacking_days > 9 && $user->stacking_days_badge == 0) {
-			$user->stacking_days_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。継続力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-		}					
-
-		//goal_time>total(effort_time)であれば目標ステータスを1に更新する。
-			
-		$this->updateGoalStatus($goal, $efforts);
-
+		$this->getStackingDaysBadge($user, $goal);	
 		// 目標をクリアしたら、バッジを獲得
-		if ($goal->status == 1 && $user->goal_clear_badge == 0) {
-			$user->goal_clear_badge = 1;
-			session()->flash('badge_message', 'おめでとうございます。達成力の称号を取得しました。');
-			session()->flash('badge_color', 'primary');				
-
-		}		
-
+		$this->getGoalClearBadge($user, $goal);
 		$user->save();		
 
 		return redirect()
@@ -268,7 +215,6 @@ class EffortController extends Controller
 							'flash_message' => '軌跡を編集しました。',
 							'color' => 'success'
 						]);			
-
 
 	}	
 
@@ -291,12 +237,8 @@ class EffortController extends Controller
 			$effort->save();
 
 			// 消去した$effortに紐づいていた$goalに紐づく軌跡合計時間($efforts_time)を再計算
-			$efforts = Effort::where('goal_id', $goal->id)
-				->where(function($efforts) {
-					$efforts->where('status', 0);
-				})->get();
-
-			$goal->efforts_time = $this->sumEffortsTime($efforts);
+			$efforts = $this->getEffortsOfGoal($goal);
+			$goal->efforts_time = $this->TimeService->sumEffortsTime($efforts);
 			$goal->save();
 		
 			return redirect()
@@ -352,73 +294,69 @@ class EffortController extends Controller
 		];
 	}	
 
-	/** 
-		* 軌跡の合計時間を計算し、目標ステータスを更新する
-		* @param Goal $goal
-		* @param Effort $effort		
-		* @return  void
-	*/
-	private function updateGoalStatus($goal, $efforts){
+	private function addStackingdays($goal, $efforts_today) {
+		// 本日の軌跡がなければ、積み上げ日数を+1
+		if ($efforts_today->isEmpty()) {
+			$goal->stacking_days += 1;						
+		}
 
-		if ($goal->goal_time <= $this->sumEffortsTime($efforts)) {
+	}
 
-			$goal->status = 1;
-			$goal->save();
+	private function updateContinuationdays($goal, $efforts_yesterday, $efforts_today){
+		// 昨日の軌跡がなければ、継続日数を1にリセットする
+		if ($efforts_yesterday->isEmpty()) {
+			$goal->continuation_days = 1;		
+		}			
 
-			session()->flash('flash_message', 'おめでとうございます。目標をクリアしました。');
-			session()->flash('color', 'success');
-
-		} else {
-
-			$goal->status = 0;
-			$goal->save();
-
-			session()->flash('flash_message', '軌跡を作成しました。');
-			session()->flash('color', 'success');			
-
+		// 昨日の軌跡が存在し、今日の軌跡が空だった場合継続日数を+1
+		if ($efforts_yesterday->isNotEmpty() && $efforts_today->isEmpty()) {
+			$goal->continuation_days += 1;
 		}		
 
 	}
 
-	/** 
-		* 軌跡の合計時間を計算する
-		* @param Effort $effort		
-		* @return  int
-	*/
-	private function sumEffortsTime($efforts) {
-		$total_efforts_time = 0;
-
-		foreach ($efforts as $effort) {
-			$total_efforts_time += $effort->effort_time;
-			
-		}
-		return $total_efforts_time;
-	}	
-
-	/** 
-		* 軌跡の合計時間を計算する
-		* @param Carbon $yesterday
-		* @param Carbon $today
-		* @param Effort $effort	
-		* @return  array
-	*/
-	private function getEffortsYesterdayAndToday($goal){
-
-		$yesterday = Carbon::yesterday()->format('Y-m-d');
-		$today = Carbon::today()->format('Y-m-d');
-
-		$efforts_yesterday = Effort::where('goal_id', $goal->id)
-			->where(function($goals) use ($yesterday){
-				$goals->whereDate('created_at', $yesterday);
-			})->get();
-
-		$efforts_today = Effort::where('goal_id', $goal->id)
-			->where(function($goals) use ($today){
-				$goals->whereDate('created_at', $today);
-			})->get();		
-
-		return array($efforts_yesterday, $efforts_today);
+	private function updateContinuationdaysmax($goal){
+		// 最大継続日数を更新する
+		if ($goal->continuation_days_max < $goal->continuation_days) {
+			$goal->continuation_days_max = $goal->continuation_days;
+		}		
 	}
 
+	private function getEffortsOfGoal($goal){
+		$efforts = Effort::where('goal_id', $goal->id)
+			->where(function($efforts) {
+					$efforts->where('status', 0);
+				})->get();
+
+		return $efforts;
+	}
+
+	// 積み上げ時間が99時間以上でバッジを獲得
+	private function getEffortsTimeBadge($user, $goal){
+		if ($goal->efforts_time > 99 && $user->efforts_time_badge == 0) {
+			$user->efforts_time_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。忍耐力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
+		}		
+	}
+
+	// 積み上げ日数が10日以上でバッジを獲得
+	private function getStackingDaysBadge($user, $goal){
+		if ($goal->stacking_days > 9 && $user->stacking_days_badge == 0) {
+			$user->stacking_days_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。継続力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
+		}			
+	}
+
+	// 目標をクリアしたら、バッジを獲得
+	private function getGoalClearBadge($user, $goal){
+		if ($goal->status == 1 && $user->goal_clear_badge == 0) {
+			$user->goal_clear_badge = 1;
+			session()->flash('badge_message', 'おめでとうございます。達成力の称号を取得しました。');
+			session()->flash('badge_color', 'primary');				
+
+		}		
+	}
 
 }

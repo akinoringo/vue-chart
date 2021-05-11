@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Effort;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class EffortService{
@@ -39,6 +40,31 @@ class EffortService{
 			})->paginate(10);	
 
 		return $efforts_follow;
+	}	
+
+	/** 
+		* 昨日と今日の軌跡を取得する
+		* @param Carbon $yesterday
+		* @param Carbon $today
+		* @param Effort $effort	
+		* @return  array
+	*/
+	public function getEffortsYesterdayAndToday($goal){
+
+		$yesterday = Carbon::yesterday()->format('Y-m-d');
+		$today = Carbon::today()->format('Y-m-d');
+
+		$efforts_yesterday = Effort::where('goal_id', $goal->id)
+			->where(function($goals) use ($yesterday){
+				$goals->whereDate('created_at', $yesterday);
+			})->get();
+
+		$efforts_today = Effort::where('goal_id', $goal->id)
+			->where(function($goals) use ($today){
+				$goals->whereDate('created_at', $today);
+			})->get();		
+
+		return array($efforts_yesterday, $efforts_today);
 	}	
 
 
