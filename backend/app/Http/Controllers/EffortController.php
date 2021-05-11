@@ -5,17 +5,26 @@ namespace App\Http\Controllers;
 use App\Effort;
 use App\Goal;
 use App\User;
-use Illuminate\Http\Request;
 use App\Http\Requests\EffortRequest;
+use App\Services\EffortService;
+use App\Services\GoalService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class EffortController extends Controller
 {
-  // EffortPolicyでCRUD操作を制限
-	public function __construct()
+	protected $effort_service;
+	protected $goal_service;
+
+  
+	public function __construct(EffortService $effort_service, GoalService $goal_service)
 	{
+		// Serviceクラスからインスタンスを作成
+		$this->EffortService = $effort_service;
+		$this->GoalService = $goal_service;
+		// EffortPolicyでCRUD操作を制限
 		$this->authorizeResource(Effort::class, 'effort');
 	}
 
@@ -31,16 +40,15 @@ class EffortController extends Controller
 		$search = $request->search;
 
 		// 全ての軌跡を検索語でソートして作成順に並び替えて取得
-		$efforts = $this->getEffortsAll($search);
+		$efforts = $this->EffortService->getEffortsAll($search);
 
 		// フォロー中の人の軌跡を検索語でソートして作成順に並び替えて取得
-		// 誰もフォローしていない場合はnullを代入
 		if (Auth::check()) {
-			$efforts_follow = $this->getEffortsFollow($search);
+			$efforts_follow = $this->EffortService->getEffortsFollow($search);
 			
 			return view('home', compact('efforts', 'efforts_follow'));				
 		} else {
-
+			// 誰もフォローしていない場合はnullを代入
 			$efforts_follow = null;
 			return view('home', compact('efforts', 'efforts_follow'));
 		}
@@ -68,7 +76,7 @@ class EffortController extends Controller
 	*/
 	public function create(){
 		// 自身の未達成の目標を取得
-		$goals = $this->myGoalsGet();
+		$goals = $this->GoalService->myGoalsGet();
 
 		// 未達成の目標がない場合は、マイページへリダイレクト
 		if (!isset($goals[0])) {
@@ -343,56 +351,6 @@ class EffortController extends Controller
 			'countLikes' => $effort->count_likes,
 		];
 	}	
-
-	/** 
-		* 全ての軌跡を検索語でソートして取得する
-		* @param Effort $effort
-		* @return  LengthAwarePaginator
-	*/
-	private function getEffortsAll($search) {
-		$efforts = Effort::orderBy('created_at', 'DESC')
-							->where('status', 0)
-							->where(function($query) use ($search) {
-								$query->orwhere('title', 'like', "%{$search}%")
-											->orwhere('content', 'like', "%{$search}%");
-							})->paginate(10);
-
-		return $efforts;
-	}
-
-	/** 
-		* フォロー中の人の軌跡を検索語でソートして取得する
-		* @param Effort $effort
-		* @return  LengthAwarePaginator
-	*/
-	private function getEffortsFollow($search) {
-		$efforts_follow = Effort::query()
-			->where('status', 0)
-			->whereIn('user_id', Auth::user()->followings()->pluck('followee_id'))
-			->orderBy('created_at', 'DESC')
-			->where(function($query) use ($search) {
-									$query->orwhere('title', 'like', "%{$search}%")
-												->orwhere('content', 'like', "%{$search}%");
-			})->paginate(10);	
-
-		return $efforts_follow;
-	}
-
-
-	/** 
-		* 自身の未達成の目標を取得する
-		* @param Goal $goal
-		* @return  Builder
-	*/
-	private function myGoalsGet() {
-		$goals = Goal::where('user_id', Auth::user()->id)
-							->where(function($goals){
-								$goals->where('status', 0);
-							})->get();
-
-		return $goals;		
-	}
-
 
 	/** 
 		* 軌跡の合計時間を計算し、目標ステータスを更新する
