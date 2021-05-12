@@ -13,6 +13,9 @@ class Effort extends Model
 		'title',
 		'content',
 		'effort_time',
+		'user_id',
+		'goal_id',
+		'id',
 	];
     //
 	public function goal(): BelongsTo
