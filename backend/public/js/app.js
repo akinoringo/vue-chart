@@ -1980,7 +1980,11 @@ __webpack_require__.r(__webpack_exports__);
     renderBarChart: function renderBarChart() {
       this.renderChart(this.chartData, {
         scales: {
+          xAxes: [{
+            stacked: true
+          }],
           yAxes: [{
+            stacked: true,
             ticks: {
               beginAtZero: true,
               min: 0,
@@ -2017,22 +2021,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     BarChart: _BarChart__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
+  props: {
+    userid: ''
+  },
   data: function data() {
     return {
       apiEffortData: {},
       effortData: {},
-      chartType: "1"
+      chartType: "1",
+      id: this.userid
     };
   },
   mounted: function mounted() {
     var _this = this;
 
-    this.$http.get("/effortgraph").then(function (responce) {
+    this.$http.get("/".concat(this.id, "/effortgraph")).then(function (responce) {
       _this.apiEffortData = responce.data;
 
       _this.setChart();
@@ -2043,11 +2053,19 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.effortData = Object.assign({}, this.effortData, {
-        labels: this.apiEffortData.apiEffortCreate,
+        labels: this.apiEffortData.week,
         datasets: [{
-          label: "積み上げ時間",
-          backgroundColor: "rgba(0, 170, 248, 0.47)",
-          data: this.apiEffortData.apiEffortTime
+          label: "目標1",
+          backgroundColor: "red",
+          data: this.apiEffortData.effortsTimeTotalOfWeek[0]
+        }, {
+          label: "目標2",
+          backgroundColor: "blue",
+          data: this.apiEffortData.effortsTimeTotalOfWeek[1]
+        }, {
+          label: "目標3",
+          backgroundColor: "green",
+          data: this.apiEffortData.effortsTimeTotalOfWeek[2]
         }]
       });
       this.$nextTick(function () {
@@ -76849,7 +76867,7 @@ var render = function() {
             name: "show",
             rawName: "v-show",
             value: _vm.chartType === "2",
-            expression: "chartType === '2'"
+            expression: "chartType === '2' "
           }
         ],
         ref: "apiChart",
@@ -89321,14 +89339,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************************!*\
   !*** ./resources/js/components/EffortChart.vue ***!
   \*************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EffortChart.vue?vue&type=template&id=e0d18792& */ "./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792&");
 /* harmony import */ var _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EffortChart.vue?vue&type=script&lang=js& */ "./resources/js/components/EffortChart.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -89358,7 +89377,7 @@ component.options.__file = "resources/js/components/EffortChart.vue"
 /*!**************************************************************************!*\
   !*** ./resources/js/components/EffortChart.vue?vue&type=script&lang=js& ***!
   \**************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

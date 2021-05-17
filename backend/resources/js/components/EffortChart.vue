@@ -6,7 +6,9 @@
 		<label>
 			<input type="radio" v-model="chartType" value="2">グラフ表示
 		</label>		
-		<bar-chart :chartData="effortData" ref="apiChart" v-show="chartType === '2'"></bar-chart>
+		<bar-chart 
+			:chartData="effortData" ref="apiChart" v-show="chartType === '2' ">
+		</bar-chart>
 	</div>
 </template>
 
@@ -16,15 +18,19 @@ export default {
 	components: {
 		BarChart
 	},
+	props: {
+    userid: ''
+	},
 	data() {
 		return {
 			apiEffortData: {},
 			effortData: {},
 			chartType: "1",
+			id: this.userid,
 		};
 	},
 	mounted() {
-		this.$http.get("/effortgraph").then(responce => {
+		this.$http.get(`/${this.id}/effortgraph`).then(responce => {
 			this.apiEffortData = responce.data;
 			this.setChart();
 		});
@@ -32,13 +38,23 @@ export default {
 	methods: {
 		setChart() {
 			this.effortData = Object.assign({}, this.effortData, {
-				labels: this.apiEffortData.apiEffortCreate,
+				labels: this.apiEffortData.week,
 				datasets: [
 					{
-						label: "積み上げ時間",
-						backgroundColor: "rgba(0, 170, 248, 0.47)",
-						data: this.apiEffortData.apiEffortTime
-					}
+						label: "目標1",
+						backgroundColor: "red",
+						data: this.apiEffortData.effortsTimeTotalOfWeek[0]
+					},
+					{
+						label: "目標2",
+						backgroundColor: "blue",
+						data: this.apiEffortData.effortsTimeTotalOfWeek[1]
+					},
+					{
+						label: "目標3",
+						backgroundColor: "green",
+						data: this.apiEffortData.effortsTimeTotalOfWeek[2]
+					}										
 				]
 			});
 			this.$nextTick(() => {

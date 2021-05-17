@@ -51,5 +51,5 @@ Route::post('/mypage/update', 'ProfileController@update')->name('mypage.update')
 Route::get('/mypage/{id}', 'ProfileController@show')->name('mypage.show'); // 追記
 
 # 積み上げ時間をグラフで表示
-Route::get('effortgraph', 'EffortGraphController@index');
+Route::get('{id}/effortgraph', 'EffortGraphController@index');
 

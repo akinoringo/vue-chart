@@ -13,8 +13,14 @@ export default {
         this.chartData,
         {
           scales: {
+            xAxes: [
+              {
+                stacked: true
+              }
+            ],
             yAxes: [
               {
+                stacked: true,
                 ticks: {
                   beginAtZero: true,
                   min: 0,
