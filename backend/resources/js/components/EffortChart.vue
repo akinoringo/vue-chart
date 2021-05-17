@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<bar-chart :chartData="weekData" ref="weekChart"></bar-chart>
+		<bar-chart :chartData="effortData" ref="apiChart"></bar-chart>
 	</div>
 </template>
 
@@ -12,21 +12,33 @@ export default {
 	},
 	data() {
 		return {
-			weekData: {
-				labels: [1,2],
+			apiEffortData: {},
+			effortData: {}
+		};
+	},
+	mounted() {
+		this.$http.get("/effortgraph").then(responce => {
+			this.apiEffortData = responce.data;
+			this.setChart();
+		});
+	},
+	methods: {
+		setChart() {
+			this.effortData = Object.assign({}, this.effortData, {
+				labels: this.apiEffortData.apiEffortCreate,
 				datasets: [
 					{
 						label: "積み上げ時間",
 						backgroundColor: "rgba(0, 170, 248, 0.47)",
-						data: [5,5]
+						data: this.apiEffortData.apiEffortTime
 					}
 				]
-			}
-		};
-	},
-	mounted() {
-		this.$refs.weekChart.renderBarChart();
-	},
+			});
+			this.$nextTick(() => {
+				this.$refs.apiChart.renderBarChart();
+			})
+		}
+	}
 };
 
 </script>

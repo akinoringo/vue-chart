@@ -10,6 +10,9 @@ import EffortLike from './components/EffortLike'
 import FollowButton from './components/FollowButton'
 import BarChart from './components/BarChart'
 import EffortChart from './components/EffortChart'
+import axios from 'axios'
+
+Vue.prototype.$http = axios;
 
 // document.querySelector('.image-picker input')
 //       .addEventListener('change', (e) => {

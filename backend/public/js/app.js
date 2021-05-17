@@ -2018,18 +2018,35 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      weekData: {
-        labels: [1, 2],
-        datasets: [{
-          label: "積み上げ時間",
-          backgroundColor: "rgba(0, 170, 248, 0.47)",
-          data: [5, 5]
-        }]
-      }
+      apiEffortData: {},
+      effortData: {}
     };
   },
   mounted: function mounted() {
-    this.$refs.weekChart.renderBarChart();
+    var _this = this;
+
+    this.$http.get("/effortgraph").then(function (responce) {
+      _this.apiEffortData = responce.data;
+
+      _this.setChart();
+    });
+  },
+  methods: {
+    setChart: function setChart() {
+      var _this2 = this;
+
+      this.effortData = Object.assign({}, this.effortData, {
+        labels: this.apiEffortData.apiEffortCreate,
+        datasets: [{
+          label: "積み上げ時間",
+          backgroundColor: "rgba(0, 170, 248, 0.47)",
+          data: this.apiEffortData.apiEffortTime
+        }]
+      });
+      this.$nextTick(function () {
+        _this2.$refs.apiChart.renderBarChart();
+      });
+    }
   }
 });
 
@@ -76776,7 +76793,9 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    [_c("bar-chart", { ref: "weekChart", attrs: { chartData: _vm.weekData } })],
+    [
+      _c("bar-chart", { ref: "apiChart", attrs: { chartData: _vm.effortData } })
+    ],
     1
   )
 }
@@ -89090,6 +89109,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_FollowButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/FollowButton */ "./resources/js/components/FollowButton.vue");
 /* harmony import */ var _components_BarChart__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/BarChart */ "./resources/js/components/BarChart.vue");
 /* harmony import */ var _components_EffortChart__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/EffortChart */ "./resources/js/components/EffortChart.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -89100,7 +89121,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- // document.querySelector('.image-picker input')
+
+
+vue__WEBPACK_IMPORTED_MODULE_1___default.a.prototype.$http = axios__WEBPACK_IMPORTED_MODULE_6___default.a; // document.querySelector('.image-picker input')
 //       .addEventListener('change', (e) => {
 //           const input = e.target;
 //           const reader = new FileReader();
