@@ -25,7 +25,7 @@
     @include('layouts.flash')
     @yield('content')
   </div>
-  @include('layouts.footer')
+  @include('layouts.footer') 
 
   <script src="{{ mix('js/app.js') }}"></script>
   <!-- JQuery -->

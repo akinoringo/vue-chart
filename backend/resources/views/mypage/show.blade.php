@@ -12,5 +12,6 @@
 	      <a class="btn btn-primary btn-lg" href="{{route('goals.create')}}" role="button">目標を作成する</a>  		
 	  	</div>
   	@endif
+    <effort-chart></effort-chart>
   </div>
 @endsection
