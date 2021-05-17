@@ -1,6 +1,12 @@
 <template>
 	<div>
-		<bar-chart :chartData="effortData" ref="apiChart"></bar-chart>
+		<label>
+			<input type="radio" v-model="chartType" value="1">グラフ表示なし
+		</label>
+		<label>
+			<input type="radio" v-model="chartType" value="2">グラフ表示
+		</label>		
+		<bar-chart :chartData="effortData" ref="apiChart" v-show="chartType === '2'"></bar-chart>
 	</div>
 </template>
 
@@ -13,7 +19,8 @@ export default {
 	data() {
 		return {
 			apiEffortData: {},
-			effortData: {}
+			effortData: {},
+			chartType: "1",
 		};
 	},
 	mounted() {

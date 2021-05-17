@@ -26,6 +26,32 @@ class ProfileController extends Controller
 		* @return  \Illuminate\Http\Response
 	*/	
 	public function show($id, Request $request) {
+		//日付を取得する日数
+		$numOfDays = 7; 
+		$startOfWeek = now()->startOfWeek();
+		$week[0] = $startOfWeek->format('Y-m-d');
+
+		//Carbonのインスタンスが上書きされないようにcopy()して日付を加算
+		for ($i=1; $i < $numOfDays ; $i++) {
+		  $week[$i] = $startOfWeek->copy()->addDay($i)->format('Y-m-d');
+		}		
+
+		// 目標のidが1の軌跡の1週間の積み上げ時間を配列で取得
+		for ($i=0; $i < $numOfDays ; $i++) {
+			$effortsOfWeek = Effort::where('goal_id', 1)
+				->where(function ($query) use ($week, $i) {
+					$query->whereDate('created_at', $week[$i]);
+				});
+
+			if ($effortsOfWeek->exists()) {
+				$effortsTimeOfWeek[$i] = $effortsOfWeek->pluck('effort_time')->all();
+				$effortsTimeTotalOfWeek[$i] = array_sum($effortsTimeOfWeek[$i]);									
+			}
+			else {
+				$effortsTimeTotalOfWeek[$i] = 0;
+			}
+		
+		}
 
 		// viewから受け渡された$idに対応するユーザーの取得
 		$user = User::find($id);
