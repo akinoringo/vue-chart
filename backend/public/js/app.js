@@ -1970,32 +1970,66 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_chartjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-chartjs */ "./node_modules/vue-chartjs/es/index.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'LineChart',
-  "extends": vue_chartjs__WEBPACK_IMPORTED_MODULE_0__["Line"],
+  "extends": vue_chartjs__WEBPACK_IMPORTED_MODULE_0__["Bar"],
+  props: {
+    chartData: {
+      type: Object
+    }
+  },
+  methods: {
+    renderBarChart: function renderBarChart() {
+      this.renderChart(this.chartData, {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              min: 0,
+              max: 20
+            }
+          }]
+        }
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EffortChart.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EffortChart.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _BarChart__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BarChart */ "./resources/js/components/BarChart.vue");
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    BarChart: _BarChart__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   data: function data() {
     return {
-      chartData: {
-        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      weekData: {
+        labels: [1, 2],
         datasets: [{
-          label: 'sample',
-          borderColor: '#0000ff',
-          data: [100, 90, 60, 70, 50, 30, 40, 50, 60, 100],
-          fill: false
+          label: "積み上げ時間",
+          backgroundColor: "rgba(0, 170, 248, 0.47)",
+          data: [5, 5]
         }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: 'Line chart'
-        },
-        legend: {
-          display: false
-        }
       }
     };
   },
   mounted: function mounted() {
-    this.renderChart(this.chartData, this.options);
+    this.$refs.weekChart.renderBarChart();
   }
 });
 
@@ -76725,6 +76759,34 @@ var reactiveProp = {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [_c("bar-chart", { ref: "weekChart", attrs: { chartData: _vm.weekData } })],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EffortLike.vue?vue&type=template&id=e4d75c64&":
 /*!*************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EffortLike.vue?vue&type=template&id=e4d75c64& ***!
@@ -89027,11 +89089,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_EffortLike__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/EffortLike */ "./resources/js/components/EffortLike.vue");
 /* harmony import */ var _components_FollowButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/FollowButton */ "./resources/js/components/FollowButton.vue");
 /* harmony import */ var _components_BarChart__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/BarChart */ "./resources/js/components/BarChart.vue");
+/* harmony import */ var _components_EffortChart__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/EffortChart */ "./resources/js/components/EffortChart.vue");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+
 
 
 
@@ -89051,7 +89115,8 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_1___default.a({
   components: {
     EffortLike: _components_EffortLike__WEBPACK_IMPORTED_MODULE_2__["default"],
     FollowButton: _components_FollowButton__WEBPACK_IMPORTED_MODULE_3__["default"],
-    BarChart: _components_BarChart__WEBPACK_IMPORTED_MODULE_4__["default"]
+    BarChart: _components_BarChart__WEBPACK_IMPORTED_MODULE_4__["default"],
+    EffortChart: _components_EffortChart__WEBPACK_IMPORTED_MODULE_5__["default"]
   }
 });
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
@@ -89123,13 +89188,14 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!**********************************************!*\
   !*** ./resources/js/components/BarChart.vue ***!
   \**********************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BarChart.vue?vue&type=script&lang=js& */ "./resources/js/components/BarChart.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 var render, staticRenderFns
 
 
@@ -89159,13 +89225,83 @@ component.options.__file = "resources/js/components/BarChart.vue"
 /*!***********************************************************************!*\
   !*** ./resources/js/components/BarChart.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./BarChart.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BarChart.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/EffortChart.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/EffortChart.vue ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EffortChart.vue?vue&type=template&id=e0d18792& */ "./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792&");
+/* harmony import */ var _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EffortChart.vue?vue&type=script&lang=js& */ "./resources/js/components/EffortChart.vue?vue&type=script&lang=js&");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/EffortChart.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/EffortChart.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/EffortChart.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./EffortChart.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EffortChart.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792& ***!
+  \********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./EffortChart.vue?vue&type=template&id=e0d18792& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
