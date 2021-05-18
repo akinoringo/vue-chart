@@ -1,13 +1,16 @@
 <template>
 	<div>
 		<label>
-			<input type="radio" v-model="chartType" value="1">グラフ表示なし
+			<input type="radio" v-model="chartType" value="1">積み上げた回数
 		</label>
-		<label>
-			<input type="radio" v-model="chartType" value="2">グラフ表示
+		<label class="ml-2">
+			<input type="radio" v-model="chartType" value="2">積み上げた時間
 		</label>		
 		<bar-chart 
-			:chartData="effortData" ref="apiChart" v-show="chartType === '2' ">
+			:chartData="countData" ref="countChart" v-show="chartType === '1' ">
+		</bar-chart>		
+		<bar-chart 
+			:chartData="timeData" ref="timeChart" v-show="chartType === '2' ">
 		</bar-chart>
 	</div>
 </template>
@@ -24,43 +27,58 @@ export default {
 	data() {
 		return {
 			apiEffortData: {},
-			effortData: {},
+			countData: {},
+			timeData: {},
 			chartType: "1",
 			id: this.userid,
+			goalsTitle: [],
+			countdatasets: [],
+			timedatasets: [],
+			color: ["red", "blue", "green"]
 		};
 	},
 	mounted() {
 		this.$http.get(`/${this.id}/effortgraph`).then(responce => {
 			this.apiEffortData = responce.data;
-			this.setChart();
+			this.setDatasets();
+			this.setChart();			
 		});
 	},
 	methods: {
 		setChart() {
-			this.effortData = Object.assign({}, this.effortData, {
-				labels: this.apiEffortData.week,
-				datasets: [
-					{
-						label: "目標1",
-						backgroundColor: "red",
-						data: this.apiEffortData.effortsTimeTotalOfWeek[0]
-					},
-					{
-						label: "目標2",
-						backgroundColor: "blue",
-						data: this.apiEffortData.effortsTimeTotalOfWeek[1]
-					},
-					{
-						label: "目標3",
-						backgroundColor: "green",
-						data: this.apiEffortData.effortsTimeTotalOfWeek[2]
-					}										
-				]
+			this.countData = Object.assign({}, this.countData, {
+				labels: this.apiEffortData.daysOnWeek,
+				datasets: this.countdatasets,
+			});			
+
+			this.timeData = Object.assign({}, this.timeData, {
+				labels: this.apiEffortData.daysOnWeek,
+				datasets: this.timedatasets,
 			});
+
 			this.$nextTick(() => {
-				this.$refs.apiChart.renderBarChart();
-			})
-		}
+				this.$refs.countChart.renderBarChart();
+				this.$refs.timeChart.renderBarChart();
+			});
+		},
+		setDatasets() {
+			this.goalsTitle = this.apiEffortData.goalsTitle;
+			for (let i = 0; i<this.apiEffortData.goalsTitle.length; i++){
+				this.timedatasets.push({
+					label: this.goalsTitle[i],
+					backgroundColor: this.color[i],
+					data: this.apiEffortData.effortsTimeTotalOnWeek[i]
+				});
+			}
+
+			for (let i = 0; i<this.apiEffortData.goalsTitle.length; i++){
+				this.countdatasets.push({
+					label: this.goalsTitle[i],
+					backgroundColor: this.color[i],
+					data: this.apiEffortData.effortsCountOnWeek[i]
+				});
+			}			
+		},
 	}
 };
 

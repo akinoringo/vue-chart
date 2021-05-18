@@ -35,41 +35,12 @@ class ProfileController extends Controller
 
 		// $userと$goal_labelに対応する目標を配列として取得
 		// $goalひとつひとつに紐づく$effortを配列として取得
-		$goals = $this->goalsGet($user, $goal_label);
-		$efforts = $this->effortsGet($goals, $search);
+		$goals = Goal::where('user_id', $user->id)->paginate(5);
+		$efforts = Effort::where('user_id', $user->id)->paginate(5);
+		// $efforts = $this->effortsGet($goals, $search);
 
 		// 達成済みの目標を配列で取得
 		$cleared_goals = $this->goalsGet($user, 1);
-
-		//日付を取得する日数
-		$numOfDays = 7; 
-		$startOfWeek = now()->startOfWeek();
-		$week[0] = $startOfWeek->format('Y/m/d');
-
-		//Carbonのインスタンスが上書きされないようにcopy()して日付を加算
-		for ($i=1; $i < $numOfDays ; $i++) {
-		  $week[$i] = $startOfWeek->copy()->addDay($i)->format('Y/m/d');
-		}	
-
-		// $i番目の目標に紐づく軌跡の1週間の積み上げ時間を配列で取得
-		for ($i=0; $i < count($goals) ; $i++) {
-			for ($j=0; $j < $numOfDays ; $j++) {
-				$effortsOfWeek[$i] = Effort::where('goal_id', $goals[$i]->id)
-					->where(function ($query) use ($week, $j) {
-						$query->whereDate('created_at', $week[$j]);
-					});
-
-				if ($effortsOfWeek[$i]->exists()) {
-					$effortsTimeOfWeek[$i][$j] = $effortsOfWeek[$i]->pluck('effort_time')->all();
-					$effortsTimeTotalOfWeek[$i][$j] = array_sum($effortsTimeOfWeek[$i][$j]);									
-				}
-				else {
-					$effortsTimeTotalOfWeek[$i][$j] = 0;
-				}
-			
-			}				
-
-		}
 	
 		// dd($effortsTimeTotalOfWeek);
 		$id = (int)$id;

@@ -15,64 +15,25 @@ class EffortGraphController extends Controller
     // viewから受け渡された$idに対応するユーザーの取得
     $user = User::find($id);
     $goal_label = 0;
-    $goals = $this->goalsGet($user, $goal_label);
+    $goals = Goal::where('user_id', $user->id)->get();
 
-    //日付を取得する日数
-    $numOfDays = 7; 
-    $startOfWeek = now()->startOfWeek();
-    $week[0] = $startOfWeek->format('Y-m-d');    
+    $goalsTitle = $goals->pluck('title');
 
-    //Carbonのインスタンスが上書きされないようにcopy()して日付を加算
-    for ($i=1; $i < $numOfDays ; $i++) {
-      $week[$i] = $startOfWeek->copy()->addDay($i)->format('Y-m-d');
-    }    
+    // 直近1週間の日付を取得
+    $daysOnWeek = $this->getDaysOnWeek();    
 
-    // $i番目の目標に紐づく軌跡の1週間の積み上げ時間を配列で取得
-    for ($i=0; $i < count($goals) ; $i++) {
-      for ($j=0; $j < $numOfDays ; $j++) {
-        $effortsOfWeek[$i] = Effort::where('goal_id', $goals[$i]->id)
-          ->where(function ($query) use ($week, $j) {
-            $query->whereDate('created_at', $week[$j]);
-          });
+    // 1週間の日別積上回数を配列で取得
+    $effortsCountOnWeek = $this->getEffortsCountOnWeek($goals, $daysOnWeek);    
 
-        if ($effortsOfWeek[$i]->exists()) {
-          $effortsTimeOfWeek[$i][$j] = $effortsOfWeek[$i]->pluck('effort_time')->all();
-          $effortsTimeTotalOfWeek[$i][$j] = array_sum($effortsTimeOfWeek[$i][$j]);                  
-        }
-        else {
-          $effortsTimeTotalOfWeek[$i][$j] = 0;
-        }
-      
-      }       
-
-    }
+    // 1週間の日別積上時間を配列で取得
+    $effortsTimeTotalOnWeek = $this->getEffortsTimeTotalOnWeek($goals, $daysOnWeek);
 
     return [
-      'week' => $week,
-      'effortsTimeTotalOfWeek' => $effortsTimeTotalOfWeek,
+      'goalsTitle' => $goalsTitle,
+      'daysOnWeek' => $daysOnWeek,
+      'effortsCountOnWeek' => $effortsCountOnWeek,
+      'effortsTimeTotalOnWeek' => $effortsTimeTotalOnWeek,
     ];     
-
-  	// $apiEffortCreate = DB::table('efforts')
-  	// 	->select('created_at', 'effort_time')
-  	// 	->whereBetween('efforts.created_at', [now()->startOfMonth()->format('Y-m-d'), now()->endOfMonth()->format('Y-m-d')])
-  	// 	->limit(7)
-  	// 	->orderby('created_at', 'desc')
-  	// 	->pluck('created_at')
-  	// 	->all();
-
-  	// $apiEffortTime = DB::table('efforts')
-  	// 	->select('created_at', 'effort_time')
-  	// 	->whereBetween('efforts.created_at', [now()->startOfMonth()->format('Y-m-d'), now()->endOfMonth()->format('Y-m-d')])
-  	// 	->limit(7)
-  	// 	->orderby('created_at', 'desc')
-  	// 	->pluck('effort_time')
-  	// 	->all();  		
-
-  	// return [
-  	// 	'apiEffortCreate' => $apiEffortCreate, 
-  	// 	'apiEffortTime' => $apiEffortTime
-  	// ];
-
 
   }
 
@@ -98,5 +59,80 @@ class EffortGraphController extends Controller
 
     return $goals;
   }
+
+  /**
+    * 今週の日付を取得する
+    * @return Array
+  */ 
+  private function getDaysOnWeek() {
+    //1週間の日数
+    $numOfDays = 7; 
+
+    //週の始まりの日付
+    $startOfWeek = now()->startOfWeek();
+    $daysOnWeek[0] = $startOfWeek->format('Y-m-d');    
+
+    //Carbonのインスタンスが上書きされないようにcopy()して日付を加算
+    for ($i=1; $i < $numOfDays ; $i++) {
+      $daysOnWeek[$i] = $startOfWeek->copy()->addDay($i)->format('Y-m-d');
+    }
+
+    return $daysOnWeek;
+
+  }
+
+
+  /**
+    * 今週の日別の積み上げ時間を目標ごとに取得する
+    * @return Array
+  */ 
+  private function getEffortsTimeTotalOnWeek($goals, $daysOnWeek) {
+    for ($i=0; $i < count($goals) ; $i++) {
+      for ($j=0; $j < count($daysOnWeek) ; $j++) {
+        $effortsOnWeek[$i] = Effort::where('goal_id', $goals[$i]->id)
+          ->where(function ($query) use ($daysOnWeek, $j) {
+            $query->whereDate('created_at', $daysOnWeek[$j]);
+          });
+
+        if ($effortsOnWeek[$i]->exists()) {
+          $effortsTimeOnWeek[$i][$j] = $effortsOnWeek[$i]->pluck('effort_time')->all();
+          $effortsTimeTotalOnWeek[$i][$j] = array_sum($effortsTimeOnWeek[$i][$j]);                  
+        }
+        else {
+          $effortsTimeTotalOnWeek[$i][$j] = 0;
+        }
+      }       
+    }    
+
+    return $effortsTimeTotalOnWeek; 
+  
+  }  
+
+  /**
+    * 今週の日別の積み上げ回数を目標ごとに取得する
+    * @return Array
+  */  
+  private function getEffortsCountOnWeek($goals, $daysOnWeek) {
+    for ($i=0; $i < count($goals) ; $i++) {
+      for ($j=0; $j < count($daysOnWeek) ; $j++) {
+        $effortsOnWeek[$i] = Effort::where('goal_id', $goals[$i]->id)
+          ->where(function ($query) use ($daysOnWeek, $j) {
+            $query->whereDate('created_at', $daysOnWeek[$j]);
+          });
+
+        if ($effortsOnWeek[$i]->exists()) {
+          $effortsCountOnWeek[$i][$j] = $effortsOnWeek[$i]->get()->count();
+
+        } else {
+
+          $effortsCountOnWeek[$i][$j] = 0;
+
+        }
+      }       
+    }    
+
+    return $effortsCountOnWeek; 
+  
+  }     
 
 }
