@@ -1,6 +1,17 @@
 <template>
 	<div>
-		<bar-chart :chartData="effortData" ref="apiChart"></bar-chart>
+		<label>
+			<input type="radio" v-model="chartType" value="1">積み上げた回数
+		</label>
+		<label class="ml-2">
+			<input type="radio" v-model="chartType" value="2">積み上げた時間
+		</label>		
+		<bar-chart 
+			:chartData="countData" ref="countChart" v-show="chartType === '1' ">
+		</bar-chart>		
+		<bar-chart 
+			:chartData="timeData" ref="timeChart" v-show="chartType === '2' ">
+		</bar-chart>
 	</div>
 </template>
 
@@ -10,34 +21,64 @@ export default {
 	components: {
 		BarChart
 	},
+	props: {
+    userid: ''
+	},
 	data() {
 		return {
 			apiEffortData: {},
-			effortData: {}
+			countData: {},
+			timeData: {},
+			chartType: "1",
+			id: this.userid,
+			goalsTitle: [],
+			countdatasets: [],
+			timedatasets: [],
+			color: ["red", "blue", "green"]
 		};
 	},
 	mounted() {
-		this.$http.get("/effortgraph").then(responce => {
+		this.$http.get(`/${this.id}/effortgraph`).then(responce => {
 			this.apiEffortData = responce.data;
-			this.setChart();
+			this.setDatasets();
+			this.setChart();			
 		});
 	},
 	methods: {
 		setChart() {
-			this.effortData = Object.assign({}, this.effortData, {
-				labels: this.apiEffortData.apiEffortCreate,
-				datasets: [
-					{
-						label: "積み上げ時間",
-						backgroundColor: "rgba(0, 170, 248, 0.47)",
-						data: this.apiEffortData.apiEffortTime
-					}
-				]
+			this.countData = Object.assign({}, this.countData, {
+				labels: this.apiEffortData.daysOnWeek,
+				datasets: this.countdatasets,
+			});			
+
+			this.timeData = Object.assign({}, this.timeData, {
+				labels: this.apiEffortData.daysOnWeek,
+				datasets: this.timedatasets,
 			});
+
 			this.$nextTick(() => {
-				this.$refs.apiChart.renderBarChart();
-			})
-		}
+				this.$refs.countChart.renderBarChart();
+				this.$refs.timeChart.renderBarChart();
+			});
+		},
+		setDatasets() {
+			this.goalsTitle = this.apiEffortData.goalsTitle;
+			for (let i = 0; i<this.apiEffortData.goalsTitle.length; i++){
+				this.timedatasets.push({
+					label: this.goalsTitle[i],
+					backgroundColor: this.color[i],
+					data: this.apiEffortData.effortsTimeTotalOnWeek[i]
+				});
+			}
+
+			for (let i = 0; i<this.apiEffortData.goalsTitle.length; i++){
+				this.countdatasets.push({
+					label: this.goalsTitle[i],
+					backgroundColor: this.color[i],
+					data: this.apiEffortData.effortsCountOnWeek[i]
+				});
+			}			
+		},
 	}
 };
 

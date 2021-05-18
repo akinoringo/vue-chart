@@ -1980,11 +1980,14 @@ __webpack_require__.r(__webpack_exports__);
     renderBarChart: function renderBarChart() {
       this.renderChart(this.chartData, {
         scales: {
+          xAxes: [{
+            stacked: true
+          }],
           yAxes: [{
+            stacked: true,
             ticks: {
               beginAtZero: true,
-              min: 0,
-              max: 20
+              min: 0
             }
           }]
         }
@@ -2011,22 +2014,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     BarChart: _BarChart__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
+  props: {
+    userid: ''
+  },
   data: function data() {
     return {
       apiEffortData: {},
-      effortData: {}
+      countData: {},
+      timeData: {},
+      chartType: "1",
+      id: this.userid,
+      goalsTitle: [],
+      countdatasets: [],
+      timedatasets: [],
+      color: ["red", "blue", "green"]
     };
   },
   mounted: function mounted() {
     var _this = this;
 
-    this.$http.get("/effortgraph").then(function (responce) {
+    this.$http.get("/".concat(this.id, "/effortgraph")).then(function (responce) {
       _this.apiEffortData = responce.data;
+
+      _this.setDatasets();
 
       _this.setChart();
     });
@@ -2035,17 +2061,38 @@ __webpack_require__.r(__webpack_exports__);
     setChart: function setChart() {
       var _this2 = this;
 
-      this.effortData = Object.assign({}, this.effortData, {
-        labels: this.apiEffortData.apiEffortCreate,
-        datasets: [{
-          label: "積み上げ時間",
-          backgroundColor: "rgba(0, 170, 248, 0.47)",
-          data: this.apiEffortData.apiEffortTime
-        }]
+      this.countData = Object.assign({}, this.countData, {
+        labels: this.apiEffortData.daysOnWeek,
+        datasets: this.countdatasets
+      });
+      this.timeData = Object.assign({}, this.timeData, {
+        labels: this.apiEffortData.daysOnWeek,
+        datasets: this.timedatasets
       });
       this.$nextTick(function () {
-        _this2.$refs.apiChart.renderBarChart();
+        _this2.$refs.countChart.renderBarChart();
+
+        _this2.$refs.timeChart.renderBarChart();
       });
+    },
+    setDatasets: function setDatasets() {
+      this.goalsTitle = this.apiEffortData.goalsTitle;
+
+      for (var i = 0; i < this.apiEffortData.goalsTitle.length; i++) {
+        this.timedatasets.push({
+          label: this.goalsTitle[i],
+          backgroundColor: this.color[i],
+          data: this.apiEffortData.effortsTimeTotalOnWeek[i]
+        });
+      }
+
+      for (var _i = 0; _i < this.apiEffortData.goalsTitle.length; _i++) {
+        this.countdatasets.push({
+          label: this.goalsTitle[_i],
+          backgroundColor: this.color[_i],
+          data: this.apiEffortData.effortsCountOnWeek[_i]
+        });
+      }
     }
   }
 });
@@ -76794,7 +76841,73 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("bar-chart", { ref: "apiChart", attrs: { chartData: _vm.effortData } })
+      _c("label", [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.chartType,
+              expression: "chartType"
+            }
+          ],
+          attrs: { type: "radio", value: "1" },
+          domProps: { checked: _vm._q(_vm.chartType, "1") },
+          on: {
+            change: function($event) {
+              _vm.chartType = "1"
+            }
+          }
+        }),
+        _vm._v("積み上げた回数\n\t")
+      ]),
+      _vm._v(" "),
+      _c("label", { staticClass: "ml-2" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.chartType,
+              expression: "chartType"
+            }
+          ],
+          attrs: { type: "radio", value: "2" },
+          domProps: { checked: _vm._q(_vm.chartType, "2") },
+          on: {
+            change: function($event) {
+              _vm.chartType = "2"
+            }
+          }
+        }),
+        _vm._v("積み上げた時間\n\t")
+      ]),
+      _vm._v(" "),
+      _c("bar-chart", {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.chartType === "1",
+            expression: "chartType === '1' "
+          }
+        ],
+        ref: "countChart",
+        attrs: { chartData: _vm.countData }
+      }),
+      _vm._v(" "),
+      _c("bar-chart", {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.chartType === "2",
+            expression: "chartType === '2' "
+          }
+        ],
+        ref: "timeChart",
+        attrs: { chartData: _vm.timeData }
+      })
     ],
     1
   )
@@ -89211,14 +89324,13 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!**********************************************!*\
   !*** ./resources/js/components/BarChart.vue ***!
   \**********************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BarChart.vue?vue&type=script&lang=js& */ "./resources/js/components/BarChart.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _BarChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 var render, staticRenderFns
 
 
@@ -89248,7 +89360,7 @@ component.options.__file = "resources/js/components/BarChart.vue"
 /*!***********************************************************************!*\
   !*** ./resources/js/components/BarChart.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89262,15 +89374,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************************!*\
   !*** ./resources/js/components/EffortChart.vue ***!
   \*************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EffortChart_vue_vue_type_template_id_e0d18792___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EffortChart.vue?vue&type=template&id=e0d18792& */ "./resources/js/components/EffortChart.vue?vue&type=template&id=e0d18792&");
 /* harmony import */ var _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EffortChart.vue?vue&type=script&lang=js& */ "./resources/js/components/EffortChart.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _EffortChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -89300,7 +89411,7 @@ component.options.__file = "resources/js/components/EffortChart.vue"
 /*!**************************************************************************!*\
   !*** ./resources/js/components/EffortChart.vue?vue&type=script&lang=js& ***!
   \**************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

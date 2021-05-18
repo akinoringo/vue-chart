@@ -26,7 +26,6 @@ class ProfileController extends Controller
 		* @return  \Illuminate\Http\Response
 	*/	
 	public function show($id, Request $request) {
-
 		// viewから受け渡された$idに対応するユーザーの取得
 		$user = User::find($id);
 
@@ -36,13 +35,17 @@ class ProfileController extends Controller
 
 		// $userと$goal_labelに対応する目標を配列として取得
 		// $goalひとつひとつに紐づく$effortを配列として取得
-		$goals = $this->goalsGet($user, $goal_label);
-		$efforts = $this->effortsGet($goals, $search);
+		$goals = Goal::where('user_id', $user->id)->paginate(5);
+		$efforts = Effort::where('user_id', $user->id)->paginate(5);
+		// $efforts = $this->effortsGet($goals, $search);
 
 		// 達成済みの目標を配列で取得
 		$cleared_goals = $this->goalsGet($user, 1);
+	
+		// dd($effortsTimeTotalOfWeek);
+		$id = (int)$id;
 
-		return view('mypage.show', compact('user', 'goals', 'efforts', 'goal_label', 'search', 'cleared_goals'));
+		return view('mypage.show', compact('user', 'goals', 'efforts', 'goal_label', 'search', 'cleared_goals', 'id'));
 
 	}
 

@@ -4,7 +4,7 @@
   
   <div class="container">
   	@include('mypage.profile')
-  	@include('mypage.label')
+  	{{-- @include('mypage.label') --}}
   	@include('mypage.tab')
   	@if($goals->isEmpty() && $user->id === Auth::user()->id)
 	  	<div class="my-4 text-center">
@@ -12,6 +12,5 @@
 	      <a class="btn btn-primary btn-lg" href="{{route('goals.create')}}" role="button">目標を作成する</a>  		
 	  	</div>
   	@endif
-    <effort-chart></effort-chart>
   </div>
 @endsection
