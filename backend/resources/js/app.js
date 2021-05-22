@@ -11,8 +11,12 @@ import FollowButton from './components/FollowButton'
 import BarChart from './components/BarChart'
 import EffortChart from './components/EffortChart'
 import axios from 'axios'
+import SocialSharing from 'vue-social-sharing';
+import GoalTagsInput from "./components/GoalTagsInput";
 
 Vue.prototype.$http = axios;
+
+Vue.use(SocialSharing);
 
 // document.querySelector('.image-picker input')
 //       .addEventListener('change', (e) => {
@@ -31,6 +35,7 @@ const app = new Vue({
 		FollowButton,
 		BarChart,
 		EffortChart,
+		GoalTagsInput,
 	}
 })
 

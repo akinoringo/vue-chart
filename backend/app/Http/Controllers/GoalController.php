@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Goal;
 use App\User;
+use App\Tag;
 use App\Http\Requests\GoalRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
@@ -46,8 +47,15 @@ class GoalController extends Controller
 			return view('goals.create');
 		} else {
 
+      $allTagNames = Tag::all()->map(function ($tag) {
+          return ['text' => $tag->name];
+      });		
+
 			return redirect()
-				->route('mypage.show', ['id' => Auth::user()->id])
+				->route('mypage.show', [
+					'id' => Auth::user()->id,
+					'allTagNames' => $allTagNames,
+				])
 				->with([
 				'flash_message' => '同時に登録できる目標は3つまでです。',
 				'color' => 'danger'
@@ -68,6 +76,11 @@ class GoalController extends Controller
 		$goal->user_id = $request->user()->id;
 		$goal->save();
 
+    $request->tags->each(function ($tagName) use ($goal) {
+        $tag = Tag::firstOrCreate(['name' => $tagName]);
+        $goal->tags()->attach($tag);
+    });		
+
 		return redirect()
 						->route('mypage.show', ['id' => Auth::user()->id])
 						->with([
@@ -86,7 +99,20 @@ class GoalController extends Controller
 	{
 		if ($goal->status === 0){
 
-			return view('goals.edit', ['goal' => $goal]);			
+      $tagNames = $goal->tags->map(function ($tag) {
+          return ['text' => $tag->name];
+      });			
+
+      $allTagNames = Tag::all()->map(function ($tag) {
+          return ['text' => $tag->name];
+      });      
+
+			return view('goals.edit', [
+				'goal' => $goal,
+				'tagNames' => $tagNames,
+				'allTagNames' => $allTagNames,
+			]);	
+
 		} else {
 
 			return redirect()
@@ -108,6 +134,13 @@ class GoalController extends Controller
 	public function update(GoalRequest $request, Goal $goal)
 	{
 		$goal->fill($request->all())->save();
+
+    $goal->tags()->detach();
+    $request->tags->each(function ($tagName) use ($goal) {
+        $tag = Tag::firstOrCreate(['name' => $tagName]);
+        $goal->tags()->attach($tag);
+    });
+
 		return redirect()
 						->route('mypage.show', ['id' => Auth::user()->id])
 						->with([

@@ -4,6 +4,17 @@
   <span class="small ml-2">50字以内</span>
   <input type="text" name="title" class="form-control" required value="{{ $goal->title ?? old('title') }}">
 </div>
+
+<div class="form-group">
+	<label>タグ</label>
+  <goal-tags-input
+  	:initial-tags='@json($tagNames ?? [])'
+	  :autocomplete-items='@json($allTagNames ?? [])'
+  >
+  </goal-tags-input>
+</div>
+
+
 <div class="form-group">
   <label>内容</label>
   <span class="small ml-2">500字以内</span>

@@ -10,6 +10,7 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
+        "@johmun/vue-tags-input": "^2.1.0",
         "axios": "^0.21.1",
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
@@ -25,6 +26,7 @@
     },
     "dependencies": {
         "chart.js": "^2.9.4",
-        "vue-chartjs": "^3.5.1"
+        "vue-chartjs": "^3.5.1",
+        "vue-social-sharing": "^2.4.6"
     }
 }
