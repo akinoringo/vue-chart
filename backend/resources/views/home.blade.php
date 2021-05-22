@@ -82,7 +82,7 @@
   <div class="row">
     <div class="col-lg-4">
       <div class="border">
-        <h3 class="text-center p-2">SNS共有</h3>
+        <h3 class="text-center p-1 pt-2">SNSリンク</h3>
         <social-sharing id="social" url="http://app-kiseki.com"
                             title="『Kiseki』 ~目標達成に向けて日々の軌跡を綴ろう~"
                             description="『Kiseki』は、目標達成をサポートするためのアプリです。"

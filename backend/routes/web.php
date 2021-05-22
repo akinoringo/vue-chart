@@ -53,3 +53,6 @@ Route::get('/mypage/{id}', 'ProfileController@show')->name('mypage.show'); // �
 # 積み上げ時間をグラフで表示
 Route::get('{id}/effortgraph', 'EffortGraphController@index');
 
+# タグ別に軌跡の一覧を表示する
+Route::get('/tags/{name}', 'TagController@show')->name('tags.show');
+
